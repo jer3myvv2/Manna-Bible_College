@@ -7,6 +7,9 @@ Website for the **Virtual Satellite Class**: TVET accredited online Certificate 
 - **Backend:** Python 3.10+ / Flask, Flask-SQLAlchemy on SQLite (`manna.db`), Flask-JWT-Extended, Flask-CORS
 - All programme content (programmes, modules, units, levels, electives, announcements, contact details)
   comes from the API. Nothing is hard-coded in React.
+- Built for phones first: a bottom action bar (Call · WhatsApp · Enroll Now) that hides while typing,
+  stacked layouts below 640px (`frontend/src/styles/mobile.css`), card-style admin application lists, and
+  "Add to Home Screen" support (`frontend/public/manifest.webmanifest` + `frontend/public/icons/`).
 
 ```
 manna-website/

@@ -1,9 +1,13 @@
 import { Outlet } from 'react-router-dom';
 import Footer from './Footer';
+import MobileActionBar from './MobileActionBar';
 import Navbar from './Navbar';
 import WhatsAppButton from './WhatsAppButton';
 
-/** Layout shared by every public page: skip link, header, footer, WhatsApp button. */
+/**
+ * Layout shared by every public page: skip link, header, footer, and the contact
+ * shortcuts (floating WhatsApp button on larger screens, bottom action bar on phones).
+ */
 export default function PublicLayout() {
   return (
     <>
@@ -16,6 +20,7 @@ export default function PublicLayout() {
       </main>
       <Footer />
       <WhatsAppButton />
+      <MobileActionBar />
     </>
   );
 }

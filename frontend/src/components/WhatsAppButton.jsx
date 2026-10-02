@@ -1,7 +1,10 @@
 import { useSiteInfo } from '../context/SiteInfoContext';
 import { WhatsAppIcon } from './Icons';
 
-/** Floating "Chat with us on WhatsApp" button (bottom-right on every public page). */
+/**
+ * Floating "Chat with us on WhatsApp" button (bottom-right on tablets and desktops).
+ * On phones the MobileActionBar takes its place.
+ */
 export default function WhatsAppButton() {
   const { info } = useSiteInfo();
   if (!info?.whatsapp_url) return null;

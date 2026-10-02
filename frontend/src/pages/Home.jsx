@@ -54,7 +54,7 @@ export default function Home() {
             ) : null}
             {info ? <p className="hero-tagline">{info.taglines.theology}</p> : null}
             <StudyAnywhereBadge className="hero-badge" />
-            <div className="hero-actions">
+            <div className="hero-actions hero-actions-split">
               <Link to="/apply" className="btn btn-gold btn-lg">
                 Enroll Today
               </Link>

@@ -670,3 +670,95 @@
   margin-top: 16px;
   font-weight: 600;
 }
+
+/* ------------------------------------------------------------------ phones */
+@media (max-width: 759px) {
+  .admin-content {
+    padding-top: 18px;
+  }
+  .admin-panel {
+    padding: 14px;
+  }
+  .admin-page-head h1 {
+    font-size: 1.35rem;
+  }
+  .admin-topbar {
+    font-size: 0.9rem;
+  }
+
+  /* Applications table becomes a list of cards */
+  .admin-table-cards thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
+  .admin-table-cards,
+  .admin-table-cards tbody {
+    display: block;
+  }
+  .admin-table-cards tbody tr {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px 14px;
+    margin-bottom: 12px;
+    padding: 14px;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    background: var(--white);
+  }
+  .admin-table-cards tbody td,
+  .admin-table-cards tbody td.num,
+  .admin-table-cards tr.is-expanded td {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    text-align: left;
+  }
+  .admin-table-cards tr.is-expanded {
+    background: #fffaf0;
+  }
+  .admin-table-cards td[data-label]::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 2px;
+    color: var(--muted);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .admin-table-cards .cell-name {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    font-size: 1rem;
+  }
+  .admin-table-cards .cell-action {
+    grid-column: 1 / -1;
+  }
+  .admin-table-cards .cell-action .btn {
+    width: 100%;
+    min-height: 40px;
+    border: 1.5px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+  }
+  .admin-table-cards .status-select {
+    width: 100%;
+    min-width: 0;
+  }
+  .admin-table-cards tr.is-expanded {
+    margin-bottom: 0;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  .admin-table-cards tbody tr.detail-row {
+    display: block;
+    margin-top: -1px;
+    border-top: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    background: #fffaf0;
+  }
+}

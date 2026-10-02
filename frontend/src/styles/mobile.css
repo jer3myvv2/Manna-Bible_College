@@ -1,0 +1,447 @@
+/*
+ * Phone refinements. Most visitors use smartphones (360–430px wide), so these
+ * rules tighten spacing, keep tap targets large and turn wide layouts into
+ * stacked ones. Loaded after the other public stylesheets.
+ */
+
+/* Tap feedback everywhere */
+a,
+button {
+  -webkit-tap-highlight-color: rgba(224, 165, 38, 0.25);
+  touch-action: manipulation;
+}
+
+.btn:active,
+.chip:active,
+.level-row-button:active {
+  transform: scale(0.98);
+}
+
+/* "Step 1 of 4" above each Apply form step (all screen sizes) */
+.form-step-count {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--gold-text);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Small phones: show stepper dots only; the step name is in the form heading */
+@media (max-width: 479px) {
+  .stepper {
+    margin-bottom: 16px;
+  }
+  .stepper-label {
+    display: none;
+  }
+}
+
+@media (max-width: 639px) {
+  /* ---------------------------------------------------------------- sections */
+  .section {
+    padding: 44px 0;
+  }
+  .section-tight {
+    padding: 32px 0;
+  }
+  .section-head {
+    margin-bottom: 24px;
+  }
+  .section-lead {
+    font-size: 1rem;
+  }
+
+  /* ---------------------------------------------------------------- home hero */
+  .hero {
+    padding: 28px 0 84px;
+  }
+  .hero-inner {
+    gap: 28px;
+  }
+  .hero-heading {
+    margin-bottom: 14px;
+  }
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+  .hero-tagline {
+    font-size: 1.02rem;
+  }
+  .hero-arch {
+    width: min(78%, 280px);
+    border-width: 5px;
+    box-shadow: 0 0 0 8px rgba(224, 165, 38, 0.16), var(--shadow);
+  }
+
+  /* Hero buttons: full width and easy to tap; two short ones share a row */
+  .hero-actions {
+    margin-top: 20px;
+    gap: 10px;
+  }
+  .hero-actions .btn {
+    flex: 1 1 100%;
+  }
+  .hero-actions-split {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .hero-actions-split .btn {
+    padding-left: 8px;
+    padding-right: 8px;
+    font-size: 0.86rem;
+    white-space: nowrap;
+  }
+
+  /* Study badge: two neat lines instead of four */
+  .study-badge {
+    gap: 10px;
+    max-width: 100%;
+    padding: 8px 16px 8px 12px;
+  }
+  .study-badge-icons .icon {
+    width: 19px;
+    height: 19px;
+  }
+  .study-badge-text strong,
+  .study-badge-text span {
+    font-size: 0.75rem;
+  }
+  .study-badge-text strong {
+    letter-spacing: 0.03em;
+  }
+
+  /* Highlights: one compact card with three rows */
+  .highlights {
+    margin-top: -52px;
+  }
+  .highlights-grid {
+    width: auto;
+    margin: 0 var(--gutter); /* the card itself sits inside the page margins */
+    padding: 0;
+    gap: 0;
+    overflow: hidden;
+    background: var(--white);
+    border-top: 4px solid var(--gold);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  .highlight-card {
+    gap: 14px;
+    padding: 14px 16px;
+    border: 0;
+    border-bottom: 1px solid var(--line);
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .highlight-card:last-child {
+    border-bottom: 0;
+  }
+  .highlight-card .icon {
+    width: 28px;
+    height: 28px;
+  }
+  .highlight-card h2 {
+    font-size: 1rem;
+  }
+  .highlight-card p {
+    font-size: 0.86rem;
+  }
+
+  /* ---------------------------------------------------------------- inner page heroes */
+  .page-hero {
+    padding: 30px 0 28px;
+  }
+  .page-hero-lead {
+    font-size: 1rem;
+  }
+
+  /* ---------------------------------------------------------------- programme cards */
+  .programme-grid {
+    gap: 18px;
+  }
+  .programme-card-body {
+    padding: 16px 18px 18px;
+  }
+  .programme-card-title {
+    font-size: 1.3rem;
+  }
+  .programme-card-text {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+  }
+
+  /* ---------------------------------------------------------------- "why study" features: icon beside text */
+  .feature-grid {
+    gap: 12px;
+  }
+  .feature {
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    column-gap: 14px;
+    padding: 18px 16px;
+  }
+  .feature-icon {
+    grid-row: span 2;
+    width: 48px;
+    height: 48px;
+    margin: 0;
+    border-radius: 12px;
+  }
+  .feature-icon .icon {
+    width: 24px;
+    height: 24px;
+  }
+  .feature h3 {
+    margin-bottom: 4px;
+    font-size: 1.05rem;
+  }
+  .feature p {
+    font-size: 0.92rem;
+  }
+
+  /* ---------------------------------------------------------------- announcements */
+  .announcement {
+    gap: 12px;
+    padding: 16px;
+  }
+  .announcement-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  /* ---------------------------------------------------------------- level progression: stacked rows */
+  .level-box-head {
+    gap: 12px;
+    padding: 14px 16px;
+  }
+  .level-box-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+  }
+  .level-box-icon .icon {
+    width: 28px;
+    height: 28px;
+  }
+  .level-box-head h3 {
+    font-size: 1.05rem;
+  }
+  .level-box-head p {
+    font-size: 0.85rem;
+  }
+  .level-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
+  .level-table tbody tr {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 2px 14px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--line);
+  }
+  .level-table tbody tr:last-child {
+    border-bottom: 0;
+  }
+  .level-table tbody th,
+  .level-table tbody td {
+    padding: 0;
+    border: 0;
+    background: transparent;
+  }
+  .level-table tbody th {
+    grid-row: span 2;
+  }
+  .level-table tbody td:first-of-type {
+    color: var(--maroon);
+    font-weight: 700;
+  }
+  .level-table tbody td:last-of-type {
+    color: var(--ink-soft);
+    font-size: 0.9rem;
+  }
+  .level-table tr.is-selected {
+    background: var(--info-bg);
+    box-shadow: inset 4px 0 0 var(--gold);
+  }
+  .level-table tr.is-selected > *,
+  .level-table tr.is-selected th {
+    background: transparent;
+    box-shadow: none;
+  }
+
+  /* ---------------------------------------------------------------- class time */
+  .classtime-box {
+    gap: 14px;
+    padding: 18px 16px;
+  }
+  .classtime-icon {
+    width: 52px;
+    height: 52px;
+  }
+  .classtime-icon .icon {
+    width: 30px;
+    height: 30px;
+  }
+  .classtime-time {
+    font-size: clamp(1.1rem, 5.6vw, 1.5rem);
+  }
+
+  /* ---------------------------------------------------------------- programme detail */
+  .programme-hero {
+    padding: 20px 0 32px;
+  }
+  .breadcrumbs ol {
+    margin-bottom: 12px;
+  }
+  .programme-hero-level {
+    font-size: 1.1rem;
+  }
+  .programme-hero-tagline {
+    font-size: 1rem;
+  }
+  .programme-description {
+    font-size: 1rem;
+    text-align: left;
+  }
+  .heading-bar {
+    padding: 12px 14px;
+  }
+
+  /* Level selector: Level 4 / 5 / 6 / All on a single row */
+  .level-selector {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+  }
+  .level-selector-label {
+    grid-column: 1 / -1;
+    font-size: 0.9rem;
+  }
+  .level-selector .chip {
+    flex-direction: column;
+    justify-content: center;
+    gap: 0;
+    min-height: 52px;
+    padding: 6px 4px;
+    border-radius: 12px;
+    font-size: 0.82rem;
+    line-height: 1.15;
+  }
+  .level-selector .chip-sub {
+    font-size: 0.66rem;
+  }
+
+  .module-grid {
+    gap: 14px;
+  }
+  .module-card-body {
+    padding: 14px 16px 16px;
+  }
+
+  /* ---------------------------------------------------------------- apply + contact forms */
+  .form-card {
+    padding: 20px 16px;
+  }
+  .form-step-title {
+    font-size: 1.25rem;
+  }
+  .form-actions .btn {
+    flex: 1;
+  }
+  .form-actions > span:empty {
+    display: none;
+  }
+  .choice-card {
+    padding: 12px 14px;
+  }
+  .review-section dl {
+    padding: 4px 14px 10px;
+  }
+  .success-card {
+    padding: 24px 16px;
+  }
+  .success-actions .btn {
+    flex: 1 1 100%;
+  }
+  .contact-quick .btn {
+    flex: 1 1 auto;
+  }
+
+  /* ---------------------------------------------------------------- short courses */
+  .courses-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .search-box {
+    flex-basis: auto;
+    max-width: none;
+  }
+  .course-grid {
+    gap: 10px;
+  }
+  .course-card {
+    padding: 14px;
+  }
+  .note-box {
+    padding: 20px 16px;
+  }
+  .note-box-actions .btn {
+    flex: 1 1 100%;
+  }
+
+  /* ---------------------------------------------------------------- CTA band */
+  .cta-band {
+    padding: 40px 0;
+  }
+  .cta-actions .btn {
+    flex: 1 1 100%;
+  }
+
+  /* ---------------------------------------------------------------- footer */
+  .footer-band-inner {
+    gap: 10px 14px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+  .footer-band-icon {
+    width: 42px;
+    height: 42px;
+  }
+  .footer-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 28px 20px;
+    padding-top: 36px;
+    padding-bottom: 28px;
+  }
+  .footer-brand,
+  .footer-col:last-child {
+    grid-column: 1 / -1;
+  }
+  .footer-links li {
+    margin: 0;
+  }
+  .footer-links a {
+    display: inline-block;
+    padding: 7px 0; /* comfortable tap target */
+  }
+  .footer-contact li {
+    margin: 0;
+  }
+  .footer-contact a {
+    display: inline-block;
+    padding: 8px 0;
+  }
+  .footer-bottom-inner {
+    flex-direction: column;
+    text-align: center;
+  }
+}

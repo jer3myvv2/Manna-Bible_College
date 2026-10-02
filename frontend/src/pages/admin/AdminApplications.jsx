@@ -87,7 +87,7 @@ export default function AdminApplications() {
           <input
             id="app-search"
             type="search"
-            placeholder="Search name, email, phone or reference"
+            placeholder="Search name, phone or reference"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
           />
@@ -145,7 +145,7 @@ export default function AdminApplications() {
             <p className="empty-state">No applications match these filters.</p>
           ) : (
             <div className="table-scroll">
-              <table className="admin-table">
+              <table className="admin-table admin-table-cards">
                 <thead>
                   <tr>
                     <th scope="col">Reference</th>
@@ -164,21 +164,27 @@ export default function AdminApplications() {
                   {data.items.map((application) => (
                     <Fragment key={application.id}>
                       <tr className={expandedId === application.id ? 'is-expanded' : undefined}>
-                        <td className="nowrap">{application.reference}</td>
-                        <td>
+                        <td className="nowrap cell-ref" data-label="Reference">
+                          {application.reference}
+                        </td>
+                        <td className="cell-wide cell-name">
                           <strong>{application.full_name}</strong>
                           <br />
                           <a href={`mailto:${application.email}`} className="muted small">
                             {application.email}
                           </a>
                         </td>
-                        <td>{application.programme_short_title}</td>
-                        <td className="num">{application.level}</td>
-                        <td className="nowrap">
+                        <td data-label="Programme">{application.programme_short_title}</td>
+                        <td className="num" data-label="Level">
+                          {application.level}
+                        </td>
+                        <td className="nowrap" data-label="Phone">
                           <a href={`tel:${application.phone}`}>{application.phone}</a>
                         </td>
-                        <td className="nowrap">{formatDate(application.created_at)}</td>
-                        <td>
+                        <td className="nowrap" data-label="Date">
+                          {formatDate(application.created_at)}
+                        </td>
+                        <td data-label="Status">
                           <label className="sr-only" htmlFor={`status-${application.id}`}>
                             Status for {application.full_name}
                           </label>
@@ -196,7 +202,7 @@ export default function AdminApplications() {
                             ))}
                           </select>
                         </td>
-                        <td>
+                        <td className="cell-action">
                           <button
                             type="button"
                             className="btn btn-link"

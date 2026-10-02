@@ -273,8 +273,9 @@ export default function Apply() {
 
           <form ref={formRef} className="form-card" onSubmit={handleSubmit} noValidate>
             <h2 ref={headingRef} tabIndex={-1} className="form-step-title">
-              <span className="sr-only">
-                Step {step + 1} of {STEPS.length}:{' '}
+              <span className="form-step-count">
+                Step {step + 1} of {STEPS.length}
+                <span className="sr-only">:</span>
               </span>
               {STEPS[step].title}
             </h2>

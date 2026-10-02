@@ -3,6 +3,7 @@
 Run in development:   flask --app app run --debug
 Run in production:    gunicorn -w 3 -b 127.0.0.1:8000 "app:create_app()"
 """
+import mimetypes
 import os
 
 from flask import Flask, request, send_from_directory
@@ -16,6 +17,9 @@ from models import db
 from routes.admin import bp as admin_bp
 from routes.public import bp as public_bp
 from utils import json_error
+
+# Python does not know the web app manifest type by default.
+mimetypes.add_type("application/manifest+json", ".webmanifest")
 
 
 def create_app(config_class=Config):
