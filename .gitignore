@@ -1,0 +1,18 @@
+# Dependencies and build output
+node_modules/
+frontend/dist/
+backend/venv/
+__pycache__/
+*.pyc
+
+# Secrets and local data (never commit these)
+.env
+.env.local
+*.db
+backend/instance/
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+*.log

@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240">
+  <rect width="240" height="240" rx="48" fill="#5A0F1C"/>
+  <g transform="translate(6 6) scale(0.95)">
+  <defs>
+    <linearGradient id="leaf" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F5D27A"/>
+      <stop offset="1" stop-color="#E0A526"/>
+    </linearGradient>
+    <linearGradient id="goldStroke" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F5D27A"/>
+      <stop offset="1" stop-color="#C98E17"/>
+    </linearGradient>
+    <linearGradient id="page" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFDF7"/>
+      <stop offset="1" stop-color="#F1E6CF"/>
+    </linearGradient>
+  </defs>
+  <g>
+    <path d="M106.4,215.0 L100.0,213.9 L93.8,212.4 L87.7,210.5 L81.7,208.2 L75.9,205.5 L70.3,202.4 L64.8,199.0 L59.7,195.2 L54.7,191.1 L50.1,186.7 L45.8,182.0 L41.7,177.0 L38.0,171.7 L34.7,166.3 L31.7,160.6 L29.1,154.7 L26.9,148.7 L25.1,142.5 L23.7,136.3 L22.7,129.9 L22.2,123.6 L22.0,117.1 L22.3,110.7 L23.0,104.4 L24.1,98.0 L25.6,91.8 L27.5,85.7 L29.8,79.7 L32.5,73.9 L35.6,68.3 L39.0,62.8 L42.8,57.7 L46.9,52.7 L51.3,48.1 L56.0,43.8 L61.0,39.7 L66.3,36.0 L71.7,32.7 L77.4,29.7 L83.3,27.1" fill="none" stroke="url(#goldStroke)" stroke-width="3" stroke-linecap="round"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(88.0,210.6) rotate(-199.0) scale(0.97)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(88.0,210.6) rotate(-123.0) scale(0.97)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(70.9,202.8) rotate(-187.9) scale(0.95)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(70.9,202.8) rotate(-111.9) scale(0.95)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(55.6,191.9) rotate(-176.9) scale(0.92)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(55.6,191.9) rotate(-100.9) scale(0.92)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(42.7,178.2) rotate(-165.9) scale(0.89)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(42.7,178.2) rotate(-89.9) scale(0.89)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(32.6,162.3) rotate(-154.9) scale(0.87)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(32.6,162.3) rotate(-78.9) scale(0.87)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(25.7,144.7) rotate(-143.8) scale(0.84)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(25.7,144.7) rotate(-67.8) scale(0.84)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(22.3,126.2) rotate(-132.8) scale(0.81)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(22.3,126.2) rotate(-56.8) scale(0.81)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(22.6,107.4) rotate(-121.8) scale(0.78)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(22.6,107.4) rotate(-45.8) scale(0.78)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(26.4,88.9) rotate(-110.7) scale(0.76)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(26.4,88.9) rotate(-34.7) scale(0.76)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(33.7,71.5) rotate(-99.7) scale(0.73)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(33.7,71.5) rotate(-23.7) scale(0.73)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(44.2,55.9) rotate(-88.7) scale(0.70)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(44.2,55.9) rotate(-12.7) scale(0.70)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(57.5,42.5) rotate(-77.6) scale(0.68)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(57.5,42.5) rotate(-1.6) scale(0.68)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(73.1,32.0) rotate(-66.6) scale(0.65)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(73.1,32.0) rotate(9.4) scale(0.65)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(83.3,27.1) rotate(-22.0) scale(0.7)"/>
+  </g>
+  <g>
+    <path d="M133.6,215.0 L140.0,213.9 L146.2,212.4 L152.3,210.5 L158.3,208.2 L164.1,205.5 L169.7,202.4 L175.2,199.0 L180.3,195.2 L185.3,191.1 L189.9,186.7 L194.2,182.0 L198.3,177.0 L202.0,171.7 L205.3,166.3 L208.3,160.6 L210.9,154.7 L213.1,148.7 L214.9,142.5 L216.3,136.3 L217.3,129.9 L217.8,123.6 L218.0,117.1 L217.7,110.7 L217.0,104.4 L215.9,98.0 L214.4,91.8 L212.5,85.7 L210.2,79.7 L207.5,73.9 L204.4,68.3 L201.0,62.8 L197.2,57.7 L193.1,52.7 L188.7,48.1 L184.0,43.8 L179.0,39.7 L173.7,36.0 L168.3,32.7 L162.6,29.7 L156.7,27.1" fill="none" stroke="url(#goldStroke)" stroke-width="3" stroke-linecap="round"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(152.0,210.6) rotate(-57.0) scale(0.97)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(152.0,210.6) rotate(19.0) scale(0.97)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(169.1,202.8) rotate(-68.1) scale(0.95)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(169.1,202.8) rotate(7.9) scale(0.95)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(184.4,191.9) rotate(-79.1) scale(0.92)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(184.4,191.9) rotate(-3.1) scale(0.92)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(197.3,178.2) rotate(-90.1) scale(0.89)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(197.3,178.2) rotate(-14.1) scale(0.89)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(207.4,162.3) rotate(-101.1) scale(0.87)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(207.4,162.3) rotate(-25.1) scale(0.87)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(214.3,144.7) rotate(-112.2) scale(0.84)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(214.3,144.7) rotate(-36.2) scale(0.84)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(217.7,126.2) rotate(-123.2) scale(0.81)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(217.7,126.2) rotate(-47.2) scale(0.81)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(217.4,107.4) rotate(-134.2) scale(0.78)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(217.4,107.4) rotate(-58.2) scale(0.78)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(213.6,88.9) rotate(-145.3) scale(0.76)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(213.6,88.9) rotate(-69.3) scale(0.76)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(206.3,71.5) rotate(-156.3) scale(0.73)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(206.3,71.5) rotate(-80.3) scale(0.73)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(195.8,55.9) rotate(-167.3) scale(0.70)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(195.8,55.9) rotate(-91.3) scale(0.70)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(182.5,42.5) rotate(-178.4) scale(0.68)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(182.5,42.5) rotate(-102.4) scale(0.68)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(166.9,32.0) rotate(-189.4) scale(0.65)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(166.9,32.0) rotate(-113.4) scale(0.65)"/>
+    <path d="M0,0 Q9,-8.5 22,0 Q9,8.5 0,0 Z" fill="url(#leaf)" stroke="#9C6B0E" stroke-width="0.6" transform="translate(156.7,27.1) rotate(-158.0) scale(0.7)"/>
+  </g>
+  <g>
+    <line x1="91.8" y1="85.7" x2="71.1" y2="78.2" stroke="#F5D27A" stroke-width="2.4" stroke-linecap="round" opacity="0.9"/>
+    <line x1="95.7" y1="78.4" x2="84.4" y2="70.1" stroke="#F5D27A" stroke-width="2.4" stroke-linecap="round" opacity="0.9"/>
+    <line x1="101.5" y1="72.4" x2="88.0" y2="55.0" stroke="#F5D27A" stroke-width="2.4" stroke-linecap="round" opacity="0.9"/>
+    <line x1="108.8" y1="68.2" x2="103.5" y2="55.2" stroke="#F5D27A" stroke-width="2.4" stroke-linecap="round" opacity="0.9"/>
+    <line x1="116.9" y1="66.2" x2="114.6" y2="44.3" stroke="#F5D27A" stroke-width="2.4" stroke-linecap="round" opacity="0.9"/>
+    <line x1="125.2" y1="66.5" x2="127.6" y2="52.7" stroke="#F5D27A" stroke-width="2.4" stroke-linecap="round" opacity="0.9"/>
+    <line x1="133.2" y1="69.0" x2="142.8" y2="49.3" stroke="#F5D27A" stroke-width="2.4" stroke-linecap="round" opacity="0.9"/>
+    <line x1="140.1" y1="73.7" x2="149.4" y2="63.3" stroke="#F5D27A" stroke-width="2.4" stroke-linecap="round" opacity="0.9"/>
+    <line x1="145.4" y1="80.1" x2="164.1" y2="68.4" stroke="#F5D27A" stroke-width="2.4" stroke-linecap="round" opacity="0.9"/>
+    <line x1="148.8" y1="87.7" x2="162.3" y2="83.9" stroke="#F5D27A" stroke-width="2.4" stroke-linecap="round" opacity="0.9"/>
+  </g>
+  <g>
+    <!-- Open Bible -->
+    <path d="M120,170 C106,161 84,159 52,164 L50,98 C80,93 105,95 120,104 C135,95 160,93 190,98 L188,164 C156,159 134,161 120,170 Z" fill="#5A0F1C" stroke="#E0A526" stroke-width="2"/>
+    <path d="M120,165 C106,156 86,154 58,158 L57,97 C84,93 106,95 120,103 Z" fill="#E8DABD"/>
+    <path d="M120,165 C134,156 154,154 182,158 L183,97 C156,93 134,95 120,103 Z" fill="#E8DABD"/>
+    <path d="M120,161 C106,152 86,150 61,153 L60,93 C86,88 107,91 120,100 Z" fill="url(#page)" stroke="#D9B65E" stroke-width="1"/>
+    <path d="M120,161 C134,152 154,150 179,153 L180,93 C154,88 133,91 120,100 Z" fill="url(#page)" stroke="#D9B65E" stroke-width="1"/>
+    <path d="M120,100 L120,161" stroke="#C7A869" stroke-width="1.4"/>
+    <text x="90" y="141" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="38" font-weight="700" fill="#5A0F1C">Α</text>
+    <text x="150" y="141" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="38" font-weight="700" fill="#5A0F1C">Ω</text>
+  </g>
+  <g>
+    <!-- Ribbon tying the wreath -->
+    <path d="M120,214 C110,206 98,206 99,214 C100,222 112,220 120,214 Z" fill="#5A0F1C" stroke="#E0A526" stroke-width="1.2"/>
+    <path d="M120,214 C130,206 142,206 141,214 C140,222 128,220 120,214 Z" fill="#5A0F1C" stroke="#E0A526" stroke-width="1.2"/>
+    <path d="M117,215 L108,232 L114,230 L117,236 L120,218 Z" fill="#5A0F1C" stroke="#E0A526" stroke-width="1"/>
+    <path d="M123,215 L132,232 L126,230 L123,236 L120,218 Z" fill="#5A0F1C" stroke="#E0A526" stroke-width="1"/>
+    <circle cx="120" cy="214" r="4" fill="#E0A526"/>
+  </g>
+  </g>
+</svg>

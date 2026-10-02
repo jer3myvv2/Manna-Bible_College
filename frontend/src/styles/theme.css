@@ -1,0 +1,67 @@
+/* Brand theme: colours and fonts taken from the Manna posters. */
+:root {
+  /* Brand colours */
+  --maroon: #5a0f1c; /* header bands, module headers, footer */
+  --maroon-dark: #3b0a12; /* hero gradient, darkest backgrounds */
+  --maroon-mid: #7a1c2c;
+  --gold: #e0a526; /* headlines, accents, buttons */
+  --gold-light: #f5d27a; /* highlight boxes */
+  --gold-text: #8a5d0a; /* gold tone dark enough for text on cream / white (5:1) */
+  --cream: #fbf6ec; /* page background */
+  --cream-dark: #f3e9d4;
+  --white: #ffffff;
+
+  /* Neutrals */
+  --ink: #2b1a1d;
+  --ink-soft: #5c4a4d;
+  --muted: #6e5d60;
+  --line: rgba(90, 15, 28, 0.18);
+  --line-strong: rgba(90, 15, 28, 0.35);
+
+  /* Status */
+  --success: #1f7a4d;
+  --success-bg: #e6f4ec;
+  --error: #b42318;
+  --error-bg: #fdecea;
+  --info-bg: #fdf3da;
+  --whatsapp: #25d366;
+  --whatsapp-dark: #0e7a40; /* 5.4:1 with white text */
+
+  /* Typography */
+  --font-display: 'Cinzel', 'Playfair Display', Georgia, serif; /* institution names */
+  --font-serif: 'Playfair Display', Georgia, 'Times New Roman', serif; /* taglines */
+  --font-heading: 'Montserrat', 'Segoe UI', Arial, sans-serif; /* bold headings */
+  --font-body: 'Open Sans', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+
+  /* Shape and spacing */
+  --radius: 14px;
+  --radius-sm: 8px;
+  --radius-pill: 999px;
+  --shadow-sm: 0 2px 8px rgba(59, 10, 18, 0.08);
+  --shadow: 0 10px 30px rgba(59, 10, 18, 0.12);
+  --container: 1180px;
+  --gutter: 16px;
+  --header-height: 72px;
+  --focus-ring: 0 0 0 3px var(--white), 0 0 0 6px var(--maroon);
+
+  /* Background photo of an open Bible used behind the maroon hero bands */
+  --bible-photo: url('/images/bible-background-mobile.jpg');
+}
+
+@media (min-width: 900px) {
+  :root {
+    --bible-photo: url('/images/bible-background.jpg');
+  }
+}
+
+@media (min-width: 640px) {
+  :root {
+    --gutter: 24px;
+  }
+}
+
+@media (min-width: 1100px) {
+  :root {
+    --header-height: 84px;
+  }
+}
