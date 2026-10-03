@@ -1,8 +1,10 @@
+import { ArrowRight, GraduationCap } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useSiteInfo, whatsappLink } from '../context/SiteInfoContext';
+import '../styles/components-modern.css';
 import { WhatsAppIcon } from './Icons';
 
-/** Maroon call-to-action band with gold text. */
+/** Maroon call-to-action panel with gold button. */
 export default function EnrollCta({
   title = 'Ready to advance your calling?',
   text,
@@ -18,23 +20,27 @@ export default function EnrollCta({
   const chat = whatsappLink(info, 'Hello, I would like to know more about enrolling.');
 
   return (
-    <section className="cta-band" aria-labelledby="cta-heading">
-      <div className="container cta-inner">
-        <div>
-          <h2 id="cta-heading" className="cta-title">
-            {title}
-          </h2>
-          <p className="cta-text">{body}</p>
-        </div>
-        <div className="cta-actions">
-          <Link to={applyTo} className="btn btn-gold btn-lg">
-            {applyLabel}
-          </Link>
-          {chat ? (
-            <a className="btn btn-outline-light btn-lg" href={chat} target="_blank" rel="noopener noreferrer">
-              <WhatsAppIcon size={20} /> Chat on WhatsApp
-            </a>
-          ) : null}
+    <section className="cta2" aria-labelledby="cta-heading">
+      <div className="container">
+        <div className="cta2-panel">
+          <GraduationCap className="cta2-watermark" size={260} strokeWidth={1} aria-hidden="true" />
+          <div className="cta2-copy">
+            <h2 id="cta-heading" className="cta2-title">
+              {title}
+            </h2>
+            <p className="cta2-text">{body}</p>
+          </div>
+          <div className="cta2-actions">
+            <Link to={applyTo} className="btn btn-gold btn-lg">
+              {applyLabel}
+              <ArrowRight size={20} strokeWidth={2.2} aria-hidden="true" />
+            </Link>
+            {chat ? (
+              <a className="btn btn-outline-light btn-lg" href={chat} target="_blank" rel="noopener noreferrer">
+                <WhatsAppIcon size={20} /> Chat on WhatsApp
+              </a>
+            ) : null}
+          </div>
         </div>
       </div>
     </section>

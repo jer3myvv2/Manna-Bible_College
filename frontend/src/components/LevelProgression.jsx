@@ -1,4 +1,5 @@
-import { ClipboardCheckIcon } from './Icons';
+import { ClipboardCheck } from 'lucide-react';
+import '../styles/components-modern.css';
 
 /** "Certificate | Diploma" and "Level 4, 5 & 6" labels from the level rows. */
 export function levelSummary(levels = []) {
@@ -20,10 +21,10 @@ export default function LevelProgression({ levels = [], selectedLevel = null, on
   const interactive = typeof onSelect === 'function';
 
   return (
-    <section className={`level-box ${className}`} aria-labelledby="level-progression-heading">
-      <div className="level-box-head">
-        <span className="level-box-icon" aria-hidden="true">
-          <ClipboardCheckIcon size={36} strokeWidth={1.6} />
+    <section className={`lv ${className}`} aria-labelledby="level-progression-heading">
+      <div className="lv-head">
+        <span className="lv-icon" aria-hidden="true">
+          <ClipboardCheck size={30} strokeWidth={1.7} />
         </span>
         <div>
           <h3 id="level-progression-heading">Level Progression</h3>
@@ -33,7 +34,7 @@ export default function LevelProgression({ levels = [], selectedLevel = null, on
         </div>
       </div>
       <div className="table-scroll">
-        <table className="level-table">
+        <table className="lv-table">
           <caption className="sr-only">Modules required for each level</caption>
           <thead>
             <tr>
@@ -51,7 +52,7 @@ export default function LevelProgression({ levels = [], selectedLevel = null, on
                     {interactive ? (
                       <button
                         type="button"
-                        className="level-row-button"
+                        className="lv-row-button"
                         aria-pressed={selected}
                         onClick={() => onSelect(selected ? null : level.level_number)}
                       >

@@ -1,16 +1,18 @@
+import { ArrowRight, BookOpen, ChevronRight, GraduationCap, House, Info, Mail, Menu, Phone, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { useSiteInfo } from '../context/SiteInfoContext';
+import '../styles/chrome-modern.css';
 import BrandNames from './BrandNames';
-import { CloseIcon, MenuIcon, PhoneIcon, WhatsAppIcon } from './Icons';
+import { WhatsAppIcon } from './Icons';
 import Logo from './Logo';
 
 const LINKS = [
-  { to: '/', label: 'Home', end: true },
-  { to: '/programmes', label: 'Programmes' },
-  { to: '/short-courses', label: 'Short Courses' },
-  { to: '/about', label: 'About' },
-  { to: '/contact', label: 'Contact' },
+  { to: '/', label: 'Home', end: true, Icon: House },
+  { to: '/programmes', label: 'Programmes', Icon: GraduationCap },
+  { to: '/short-courses', label: 'Short Courses', Icon: BookOpen },
+  { to: '/about', label: 'About', Icon: Info },
+  { to: '/contact', label: 'Contact', Icon: Mail },
 ];
 
 const DESKTOP_QUERY = '(min-width: 1100px)';
@@ -18,6 +20,7 @@ const DESKTOP_QUERY = '(min-width: 1100px)';
 /** Sticky site header with both institution names and a mobile hamburger menu. */
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const { pathname } = useLocation();
   const { info } = useSiteInfo();
 
@@ -42,48 +45,57 @@ export default function Navbar() {
     return () => document.body.classList.remove('nav-open');
   }, [open]);
 
+  // Add a soft shadow once the page has scrolled.
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   return (
-    <header className="site-header">
-      <div className="container nav-inner">
-        <Link to="/" className="brand" aria-label="Manna College and Manna Bible Institute, home">
-          <Logo size={52} decorative />
+    <header className={`nb ${scrolled ? 'is-scrolled' : ''}`}>
+      <div className="container nb-inner">
+        <Link to="/" className="nb-brand" aria-label="Manna College and Manna Bible Institute, home">
+          <span className="nb-logo">
+            <Logo size={44} decorative />
+          </span>
           <BrandNames />
         </Link>
 
         <button
           type="button"
-          className="nav-toggle"
+          className="nb-toggle"
           aria-expanded={open}
           aria-controls="primary-navigation"
           onClick={() => setOpen((value) => !value)}
         >
-          {open ? <CloseIcon size={26} /> : <MenuIcon size={26} />}
+          {open ? <X size={24} strokeWidth={2.2} aria-hidden="true" /> : <Menu size={24} strokeWidth={2.2} aria-hidden="true" />}
           <span className="sr-only">{open ? 'Close menu' : 'Open menu'}</span>
         </button>
 
-        {open ? <div className="nav-backdrop" aria-hidden="true" onClick={() => setOpen(false)} /> : null}
+        {open ? <div className="nb-backdrop" aria-hidden="true" onClick={() => setOpen(false)} /> : null}
 
-        <nav
-          id="primary-navigation"
-          className={`primary-nav ${open ? 'is-open' : ''}`}
-          aria-label="Main navigation"
-        >
-          <ul className="nav-links">
-            {LINKS.map((link) => (
-              <li key={link.to}>
-                <NavLink to={link.to} end={link.end} className="nav-link">
-                  {link.label}
+        <nav id="primary-navigation" className={`nb-nav ${open ? 'is-open' : ''}`} aria-label="Main navigation">
+          <ul className="nb-links">
+            {LINKS.map(({ to, label, end, Icon }) => (
+              <li key={to}>
+                <NavLink to={to} end={end} className={({ isActive }) => `nb-link ${isActive ? 'is-active' : ''}`}>
+                  <Icon className="nb-link-icon" size={20} strokeWidth={1.9} aria-hidden="true" />
+                  <span>{label}</span>
+                  <ChevronRight className="nb-chevron" size={18} aria-hidden="true" />
                 </NavLink>
               </li>
             ))}
           </ul>
-          <Link to="/apply" className="btn btn-gold nav-cta">
+          <Link to="/apply" className="btn btn-maroon nb-cta">
             Enroll Now
+            <ArrowRight size={18} strokeWidth={2.2} aria-hidden="true" />
           </Link>
           {info ? (
-            <div className="nav-quick">
-              <a href={info.phone_href} className="btn btn-outline-light">
-                <PhoneIcon size={18} /> Call us
+            <div className="nb-quick">
+              <a href={info.phone_href} className="btn btn-outline">
+                <Phone size={18} strokeWidth={2} aria-hidden="true" /> Call us
               </a>
               <a href={info.whatsapp_url} target="_blank" rel="noopener noreferrer" className="btn btn-whatsapp">
                 <WhatsAppIcon size={18} /> WhatsApp
@@ -91,7 +103,7 @@ export default function Navbar() {
             </div>
           ) : null}
           {info ? (
-            <p className="nav-classtime">
+            <p className="nb-classtime">
               Classes: {info.class_time.display} {info.class_time.timezone_short}
             </p>
           ) : null}
