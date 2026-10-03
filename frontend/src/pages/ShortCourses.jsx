@@ -1,13 +1,16 @@
+import { Search } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getElectives } from '../api/public';
 import EnrollCta from '../components/EnrollCta';
-import { SearchIcon, WhatsAppIcon } from '../components/Icons';
+import { WhatsAppIcon } from '../components/Icons';
 import PageHero from '../components/PageHero';
+import Reveal from '../components/Reveal';
 import Seo from '../components/Seo';
 import { EmptyState, ErrorMessage, Loader } from '../components/Status';
 import { useSiteInfo, whatsappLink } from '../context/SiteInfoContext';
 import useApi from '../hooks/useApi';
+import '../styles/pages-modern.css';
 
 /** Searchable grid of the elective / short courses. */
 export default function ShortCourses() {
@@ -34,17 +37,17 @@ export default function ShortCourses() {
         lead="Electives that deepen your skills in care, counselling and community service."
       />
 
-      <section className="section" aria-labelledby="courses-heading">
+      <section className="pm-section" aria-labelledby="courses-heading">
         <div className="container">
-          <div className="courses-toolbar">
-            <h2 id="courses-heading" className="section-title section-title-sm">
+          <Reveal className="sc-toolbar">
+            <h2 id="courses-heading" className="pm-title pm-title-left pm-title-sm">
               {data ? `${data.length} courses` : 'Courses'}
             </h2>
-            <div className="search-box">
+            <div className="sc-search">
               <label htmlFor="course-search" className="sr-only">
                 Search short courses
               </label>
-              <SearchIcon size={20} />
+              <Search size={20} strokeWidth={2} aria-hidden="true" />
               <input
                 id="course-search"
                 type="search"
@@ -53,7 +56,7 @@ export default function ShortCourses() {
                 onChange={(event) => setQuery(event.target.value)}
               />
             </div>
-          </div>
+          </Reveal>
 
           {loading ? <Loader label="Loading short courses…" /> : null}
           {error ? <ErrorMessage error={error} onRetry={reload} /> : null}
@@ -65,33 +68,34 @@ export default function ShortCourses() {
           </p>
 
           {filtered.length ? (
-            <ul className="course-grid" role="list">
-              {filtered.map((course) => (
-                <li key={course.id} className="course-card">
-                  <span className="course-number" aria-hidden="true">
+            <ul className="sc-grid" role="list">
+              {filtered.map((course, index) => (
+                // only the first screenful staggers; later cards reveal on scroll
+                <Reveal as="li" key={course.id} delay={(index % 6) * 60} className="sc-card">
+                  <span className="sc-number" aria-hidden="true">
                     {String(course.number).padStart(2, '0')}
                   </span>
                   <div>
-                    <h3 className="course-name">{course.name}</h3>
+                    <h3 className="sc-name">{course.name}</h3>
                     {course.programme_title ? (
-                      <p className="course-programme">
+                      <p className="sc-programme">
                         Elective in{' '}
                         <Link to={`/programmes/${course.programme_slug}`}>{course.programme_title}</Link>
                       </p>
                     ) : null}
                   </div>
-                </li>
+                </Reveal>
               ))}
             </ul>
           ) : null}
 
           {info ? (
-            <div className="note-box">
+            <Reveal className="sc-note">
               <p>
                 Interested in a short course? Contact us for the next intake and to find out how electives fit
                 into your programme.
               </p>
-              <div className="note-box-actions">
+              <div className="sc-note-actions">
                 <a
                   className="btn btn-whatsapp"
                   href={whatsappLink(info, 'Hello, I would like to know more about your short courses.')}
@@ -100,16 +104,18 @@ export default function ShortCourses() {
                 >
                   <WhatsAppIcon size={20} /> Ask on WhatsApp
                 </a>
-                <Link to="/contact" className="btn btn-outline">
+                <Link to="/contact" className="btn btn-outline-light">
                   Contact us
                 </Link>
               </div>
-            </div>
+            </Reveal>
           ) : null}
         </div>
       </section>
 
-      <EnrollCta />
+      <Reveal variant="fade">
+        <EnrollCta />
+      </Reveal>
     </>
   );
 }

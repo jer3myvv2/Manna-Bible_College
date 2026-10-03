@@ -1,25 +1,32 @@
+import {
+  ArrowRight,
+  Award,
+  CalendarClock,
+  GraduationCap,
+  Laptop,
+  Megaphone,
+  Moon,
+  ShieldCheck,
+  Sparkles,
+  Users,
+  Wifi,
+} from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { getAnnouncements, getLevels, getProgrammes } from '../api/public';
 import ClassTimeBox from '../components/ClassTimeBox';
 import EnrollCta from '../components/EnrollCta';
-import {
-  AwardIcon,
-  CalendarIcon,
-  LaptopIcon,
-  MegaphoneIcon,
-  MoonIcon,
-  ShieldCheckIcon,
-  UsersIcon,
-  WifiIcon,
-} from '../components/Icons';
 import LevelProgression from '../components/LevelProgression';
 import ProgrammeCard from '../components/ProgrammeCard';
+import Reveal from '../components/Reveal';
 import Seo from '../components/Seo';
 import { EmptyState, ErrorMessage, Loader } from '../components/Status';
 import StudyAnywhereBadge from '../components/StudyAnywhereBadge';
 import { useSiteInfo } from '../context/SiteInfoContext';
 import useApi from '../hooks/useApi';
 import { formatDate, joinList } from '../utils/format';
+import '../styles/home.css';
+
+const ICON = { strokeWidth: 1.9, 'aria-hidden': true };
 
 export default function Home() {
   const { info } = useSiteInfo();
@@ -38,33 +45,48 @@ export default function Home() {
       />
 
       {/* Hero */}
-      <section className="hero" aria-labelledby="hero-heading">
-        <div className="container hero-inner">
-          <div className="hero-copy">
-            <h1 id="hero-heading" className="hero-heading">
-              <span className="hero-kicker">Advance Your Calling with Our</span>
-              <span className="hero-virtual">VIRTUAL</span>
-              <span className="hero-satellite">SATELLITE CLASS</span>
+      <section className="hm-hero" aria-labelledby="hero-heading">
+        <div className="container hm-hero-inner">
+          <div className="hm-hero-copy">
+            <h1 id="hero-heading" className="hm-hero-heading">
+              <Reveal as="span" variant="up" className="hm-kicker">
+                <Sparkles size={16} {...ICON} />
+                Advance Your Calling with Our
+              </Reveal>
+              <Reveal as="span" variant="up" delay={100} className="hm-virtual">
+                VIRTUAL
+              </Reveal>
+              <Reveal as="span" variant="up" delay={200} className="hm-satellite">
+                SATELLITE CLASS
+              </Reveal>
             </h1>
             {programmeNames ? (
-              <p className="hero-subtitle">
+              <Reveal as="p" delay={300} className="hm-hero-subtitle">
                 {awardLabel} in <strong>{programmeNames}</strong>
-                {levelLabel ? <span className="hero-levels"> ({levelLabel})</span> : null}
-              </p>
+                {levelLabel ? <span className="hm-hero-levels"> ({levelLabel})</span> : null}
+              </Reveal>
             ) : null}
-            {info ? <p className="hero-tagline">{info.taglines.theology}</p> : null}
-            <StudyAnywhereBadge className="hero-badge" />
-            <div className="hero-actions hero-actions-split">
-              <Link to="/apply" className="btn btn-gold btn-lg">
+            {info ? (
+              <Reveal as="p" delay={380} className="hm-hero-tagline">
+                {info.taglines.theology}
+              </Reveal>
+            ) : null}
+            <Reveal delay={450} className="hm-badge-wrap">
+              <StudyAnywhereBadge />
+            </Reveal>
+            <Reveal delay={520} className="hm-hero-actions">
+              <Link to="/apply" className="btn btn-gold btn-lg hm-btn">
                 Enroll Today
+                <ArrowRight size={20} {...ICON} />
               </Link>
-              <Link to="/programmes" className="btn btn-outline-light btn-lg">
+              <Link to="/programmes" className="btn btn-outline-light btn-lg hm-btn">
                 View Programmes
               </Link>
-            </div>
+            </Reveal>
           </div>
-          <div className="hero-media">
-            <div className="hero-arch">
+
+          <Reveal variant="zoom" delay={250} className="hm-hero-media">
+            <div className="hm-hero-frame">
               <img
                 src="/images/hero-african-student-studying-on-laptop.jpg"
                 alt="A smiling student studying online on a laptop"
@@ -72,29 +94,41 @@ export default function Home() {
                 height="964"
               />
             </div>
-          </div>
+            <span className="hm-float hm-float-a">
+              <ShieldCheck size={18} {...ICON} /> TVET Accredited
+            </span>
+            <span className="hm-float hm-float-b">
+              <Wifi size={18} {...ICON} /> 100% Online
+            </span>
+          </Reveal>
         </div>
       </section>
 
       {/* Highlight strip */}
-      <section className="highlights" aria-label="Highlights">
-        <div className="container highlights-grid">
-          <div className="highlight-card">
-            <ShieldCheckIcon size={34} />
+      <section className="hm-highlights" aria-label="Highlights">
+        <div className="container hm-highlights-grid">
+          <Reveal className="hm-highlight">
+            <span className="hm-icon-tile">
+              <ShieldCheck size={28} {...ICON} />
+            </span>
             <div>
               <h2>TVET Accredited</h2>
               <p>Recognised Certificate and Diploma awards.</p>
             </div>
-          </div>
-          <div className="highlight-card">
-            <WifiIcon size={34} />
+          </Reveal>
+          <Reveal delay={120} className="hm-highlight">
+            <span className="hm-icon-tile">
+              <Wifi size={28} {...ICON} />
+            </span>
             <div>
               <h2>100% Online</h2>
               <p>Study from any location on your laptop, tablet or smartphone.</p>
             </div>
-          </div>
-          <div className="highlight-card">
-            <MoonIcon size={34} />
+          </Reveal>
+          <Reveal delay={240} className="hm-highlight">
+            <span className="hm-icon-tile">
+              <Moon size={28} {...ICON} />
+            </span>
             <div>
               <h2>Evening Classes</h2>
               <p>
@@ -103,32 +137,36 @@ export default function Home() {
                   : 'Live evening classes'}
               </p>
             </div>
-          </div>
+          </Reveal>
         </div>
       </section>
 
       {/* Programmes */}
-      <section className="section" aria-labelledby="programmes-heading">
+      <section className="hm-section" aria-labelledby="programmes-heading">
         <div className="container">
-          <div className="section-head">
-            <p className="eyebrow">Our programmes</p>
-            <h2 id="programmes-heading" className="section-title">
+          <Reveal className="hm-head">
+            <p className="hm-eyebrow">
+              <GraduationCap size={16} {...ICON} /> Our programmes
+            </p>
+            <h2 id="programmes-heading" className="hm-title">
               Certificate &amp; Diploma Programmes
             </h2>
-            <p className="section-lead">
+            <p className="hm-lead">
               {awardLabel ? `${awardLabel} programmes, ${levelLabel}. ` : ''}
               Open a programme to see every module and unit.
             </p>
-          </div>
+          </Reveal>
           {programmes.loading ? <Loader label="Loading programmes…" /> : null}
           {programmes.error ? <ErrorMessage error={programmes.error} onRetry={programmes.reload} /> : null}
           {programmes.data && programmes.data.length === 0 ? (
             <EmptyState>No programmes are open for enrolment right now.</EmptyState>
           ) : null}
           {programmes.data?.length ? (
-            <div className="programme-grid">
-              {programmes.data.map((programme) => (
-                <ProgrammeCard key={programme.slug} programme={programme} />
+            <div className="hm-programme-grid">
+              {programmes.data.map((programme, index) => (
+                <Reveal key={programme.slug} delay={index * 120} className="hm-stretch">
+                  <ProgrammeCard programme={programme} />
+                </Reveal>
               ))}
             </div>
           ) : null}
@@ -136,39 +174,47 @@ export default function Home() {
       </section>
 
       {/* Level progression */}
-      <section className="section section-alt" aria-labelledby="levels-heading">
+      <section className="hm-section hm-section-tint" aria-labelledby="levels-heading">
         <div className="container">
-          <div className="section-head">
-            <p className="eyebrow">How you progress</p>
-            <h2 id="levels-heading" className="section-title">
+          <Reveal className="hm-head">
+            <p className="hm-eyebrow">
+              <Award size={16} {...ICON} /> How you progress
+            </p>
+            <h2 id="levels-heading" className="hm-title">
               Level Progression
             </h2>
-            <p className="section-lead">The same clear path applies to every programme.</p>
-          </div>
+            <p className="hm-lead">The same clear path applies to every programme.</p>
+          </Reveal>
           {levels.loading ? <Loader label="Loading levels…" /> : null}
           {levels.error ? <ErrorMessage error={levels.error} onRetry={levels.reload} /> : null}
           {levels.data ? (
-            <div className="info-pair">
-              <LevelProgression levels={levels.data} />
-              <ClassTimeBox />
+            <div className="info-pair hm-info-pair">
+              <Reveal variant="left">
+                <LevelProgression levels={levels.data} />
+              </Reveal>
+              <Reveal variant="right" delay={150}>
+                <ClassTimeBox />
+              </Reveal>
             </div>
           ) : null}
         </div>
       </section>
 
       {/* Why study with us */}
-      <section className="section" aria-labelledby="why-heading">
+      <section className="hm-section" aria-labelledby="why-heading">
         <div className="container">
-          <div className="section-head">
-            <p className="eyebrow">Why study with us</p>
-            <h2 id="why-heading" className="section-title">
+          <Reveal className="hm-head">
+            <p className="hm-eyebrow">
+              <Sparkles size={16} {...ICON} /> Why study with us
+            </p>
+            <h2 id="why-heading" className="hm-title">
               Quality education that fits your life
             </h2>
-          </div>
-          <div className="feature-grid">
-            <article className="feature">
-              <span className="feature-icon" aria-hidden="true">
-                <CalendarIcon size={30} />
+          </Reveal>
+          <div className="hm-feature-grid">
+            <Reveal as="article" delay={0} className="hm-feature">
+              <span className="hm-feature-icon">
+                <CalendarClock size={28} {...ICON} />
               </span>
               <h3>Flexible schedule</h3>
               <p>
@@ -176,44 +222,46 @@ export default function Home() {
                 {info ? ` (${info.class_time.display} ${info.class_time.timezone_short})` : ''}, so you can keep
                 working and serving while you study.
               </p>
-            </article>
-            <article className="feature">
-              <span className="feature-icon" aria-hidden="true">
-                <LaptopIcon size={30} />
+            </Reveal>
+            <Reveal as="article" delay={100} className="hm-feature">
+              <span className="hm-feature-icon">
+                <Laptop size={28} {...ICON} />
               </span>
               <h3>Study from anywhere</h3>
               <p>Join from home, church or work on your laptop, tablet or smartphone. All you need is internet.</p>
-            </article>
-            <article className="feature">
-              <span className="feature-icon" aria-hidden="true">
-                <AwardIcon size={30} />
+            </Reveal>
+            <Reveal as="article" delay={200} className="hm-feature">
+              <span className="hm-feature-icon">
+                <Award size={28} {...ICON} />
               </span>
               <h3>Accredited certificates</h3>
               <p>We are TVET accredited, so your Certificate and Diploma awards are recognised.</p>
-            </article>
-            <article className="feature">
-              <span className="feature-icon" aria-hidden="true">
-                <UsersIcon size={30} />
+            </Reveal>
+            <Reveal as="article" delay={300} className="hm-feature">
+              <span className="hm-feature-icon">
+                <Users size={28} {...ICON} />
               </span>
               <h3>Equipping leaders</h3>
               <p>
                 Practical training that equips leaders for ministry, chaplaincy and counselling, transforming
                 lives in the church and the community.
               </p>
-            </article>
+            </Reveal>
           </div>
         </div>
       </section>
 
       {/* Announcements */}
-      <section className="section section-alt" aria-labelledby="news-heading">
+      <section className="hm-section hm-section-tint" aria-labelledby="news-heading">
         <div className="container">
-          <div className="section-head">
-            <p className="eyebrow">News &amp; intakes</p>
-            <h2 id="news-heading" className="section-title">
+          <Reveal className="hm-head">
+            <p className="hm-eyebrow">
+              <Megaphone size={16} {...ICON} /> News &amp; intakes
+            </p>
+            <h2 id="news-heading" className="hm-title">
               Announcements
             </h2>
-          </div>
+          </Reveal>
           {announcements.loading ? <Loader label="Loading announcements…" /> : null}
           {announcements.error ? (
             <ErrorMessage error={announcements.error} onRetry={announcements.reload} />
@@ -224,27 +272,29 @@ export default function Home() {
             </EmptyState>
           ) : null}
           {announcements.data?.length ? (
-            <div className="announcement-list">
-              {announcements.data.map((item) => (
-                <article key={item.id} className="announcement">
-                  <span className="announcement-icon" aria-hidden="true">
-                    <MegaphoneIcon size={26} />
+            <div className="hm-news-grid">
+              {announcements.data.map((item, index) => (
+                <Reveal as="article" key={item.id} delay={(index % 3) * 100} className="hm-news">
+                  <span className="hm-news-icon">
+                    <Megaphone size={24} {...ICON} />
                   </span>
                   <div>
                     <h3>{item.title}</h3>
-                    <p className="announcement-date">
+                    <p className="hm-news-date">
                       <time dateTime={item.created_at}>{formatDate(item.created_at)}</time>
                     </p>
-                    <p className="announcement-body">{item.body}</p>
+                    <p className="hm-news-body">{item.body}</p>
                   </div>
-                </article>
+                </Reveal>
               ))}
             </div>
           ) : null}
         </div>
       </section>
 
-      <EnrollCta />
+      <Reveal variant="fade">
+        <EnrollCta />
+      </Reveal>
     </>
   );
 }

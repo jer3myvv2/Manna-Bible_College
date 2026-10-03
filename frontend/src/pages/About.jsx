@@ -1,15 +1,17 @@
+import { Building2, GraduationCap, Landmark, ShieldCheck, Target } from 'lucide-react';
 import { getProgrammes } from '../api/public';
 import ClassTimeBox from '../components/ClassTimeBox';
 import EnrollCta from '../components/EnrollCta';
-import { ShieldCheckIcon } from '../components/Icons';
 import Logo from '../components/Logo';
 import PageHero from '../components/PageHero';
 import PlaceholderNote from '../components/PlaceholderNote';
+import Reveal from '../components/Reveal';
 import Seo from '../components/Seo';
 import { ErrorMessage, Loader } from '../components/Status';
 import StudyAnywhereBadge from '../components/StudyAnywhereBadge';
 import { useSiteInfo } from '../context/SiteInfoContext';
 import useApi from '../hooks/useApi';
+import '../styles/pages-modern.css';
 
 /**
  * About page. Text wrapped in <PlaceholderNote> was not supplied by the school
@@ -32,11 +34,13 @@ export default function About() {
       />
 
       {/* Mission */}
-      <section className="section" aria-labelledby="mission-heading">
-        <div className="container about-grid">
-          <div>
-            <p className="eyebrow">Our mission</p>
-            <h2 id="mission-heading" className="section-title">
+      <section className="pm-section" aria-labelledby="mission-heading">
+        <div className="container ab-grid">
+          <Reveal variant="left">
+            <p className="pm-eyebrow">
+              <Target size={16} strokeWidth={2} aria-hidden="true" /> Our mission
+            </p>
+            <h2 id="mission-heading" className="pm-title pm-title-left">
               {info?.taglines.mission || 'Equipping Leaders. Transforming Lives.'}
             </h2>
             <PlaceholderNote>
@@ -47,28 +51,33 @@ export default function About() {
                 families, jobs or ministries.
               </p>
             </PlaceholderNote>
-          </div>
-          <div className="about-aside">
+          </Reveal>
+          <Reveal variant="right" delay={150} className="ab-aside">
             <StudyAnywhereBadge />
             <ClassTimeBox />
-          </div>
+          </Reveal>
         </div>
       </section>
 
       {/* Two institutions */}
-      <section className="section section-alt" aria-labelledby="institutions-heading">
+      <section className="pm-section pm-section-tint" aria-labelledby="institutions-heading">
         <div className="container">
-          <div className="section-head">
-            <p className="eyebrow">Sister institutions</p>
-            <h2 id="institutions-heading" className="section-title">
+          <Reveal className="pm-head">
+            <p className="pm-eyebrow">
+              <Landmark size={16} strokeWidth={2} aria-hidden="true" /> Sister institutions
+            </p>
+            <h2 id="institutions-heading" className="pm-title">
               Manna College &amp; Manna Bible Institute
             </h2>
-          </div>
-          <div className="two-col">
-            <article className="info-card">
+          </Reveal>
+          <div className="ab-two">
+            <Reveal as="article" className="ab-card">
+              <span className="ab-card-icon" aria-hidden="true">
+                <GraduationCap size={28} strokeWidth={1.8} />
+              </span>
               <h3>Manna College</h3>
               {info ? (
-                <p className="info-card-link">
+                <p className="ab-card-link">
                   <a href={info.websites[0]?.url} target="_blank" rel="noopener noreferrer">
                     {info.websites[0]?.label}
                   </a>
@@ -80,11 +89,14 @@ export default function About() {
                   academic content with practical, career-focused training.
                 </p>
               </PlaceholderNote>
-            </article>
-            <article className="info-card">
+            </Reveal>
+            <Reveal as="article" delay={120} className="ab-card">
+              <span className="ab-card-icon" aria-hidden="true">
+                <Building2 size={28} strokeWidth={1.8} />
+              </span>
               <h3>Manna Bible Institute</h3>
               {info ? (
-                <p className="info-card-link">
+                <p className="ab-card-link">
                   <a href={info.websites[1]?.url} target="_blank" rel="noopener noreferrer">
                     {info.websites[1]?.label}
                   </a>
@@ -96,26 +108,28 @@ export default function About() {
                   and ministry training rooted in the Word of God.
                 </p>
               </PlaceholderNote>
-            </article>
+            </Reveal>
           </div>
-          <PlaceholderNote>
-            <p className="about-relationship">
-              Together, the two institutions run a shared Virtual Satellite Class so that students can study
-              ministry, chaplaincy and counselling online, wherever they are.
-            </p>
-          </PlaceholderNote>
+          <Reveal delay={150}>
+            <PlaceholderNote>
+              <p className="ab-relationship">
+                Together, the two institutions run a shared Virtual Satellite Class so that students can study
+                ministry, chaplaincy and counselling online, wherever they are.
+              </p>
+            </PlaceholderNote>
+          </Reveal>
         </div>
       </section>
 
       {/* Emblem */}
-      <section className="section" aria-labelledby="emblem-heading">
-        <div className="container emblem">
-          <div className="emblem-logo">
+      <section className="pm-section" aria-labelledby="emblem-heading">
+        <div className="container ab-emblem">
+          <Reveal variant="zoom" className="ab-emblem-logo">
             <Logo size={220} />
-          </div>
-          <div>
-            <p className="eyebrow">Our emblem</p>
-            <h2 id="emblem-heading" className="section-title">
+          </Reveal>
+          <Reveal variant="right" delay={150}>
+            <p className="pm-eyebrow">Our emblem</p>
+            <h2 id="emblem-heading" className="pm-title pm-title-left">
               The Alpha and the Omega
             </h2>
             <p>
@@ -124,7 +138,7 @@ export default function About() {
               laurel wreath.
             </p>
             <PlaceholderNote>
-              <ul className="emblem-list">
+              <ul className="ab-emblem-list">
                 <li>
                   <strong>The open Bible</strong>: the Word of God at the centre of all we teach.
                 </li>
@@ -137,42 +151,48 @@ export default function About() {
                 </li>
               </ul>
             </PlaceholderNote>
-          </div>
+          </Reveal>
         </div>
       </section>
 
       {/* Accreditation */}
-      <section className="section section-alt" aria-labelledby="accreditation-heading">
+      <section className="pm-section pm-section-tint" aria-labelledby="accreditation-heading">
         <div className="container">
-          <div className="section-head">
-            <p className="eyebrow">Accreditation</p>
-            <h2 id="accreditation-heading" className="section-title">
+          <Reveal className="pm-head">
+            <p className="pm-eyebrow">
+              <ShieldCheck size={16} strokeWidth={2} aria-hidden="true" /> Accreditation
+            </p>
+            <h2 id="accreditation-heading" className="pm-title">
               We are TVET accredited
             </h2>
-            <p className="section-lead">
+            <p className="pm-lead">
               Our Certificate and Diploma programmes are accredited under Kenya&apos;s Technical and Vocational
               Education and Training (TVET) system.
             </p>
-          </div>
+          </Reveal>
           {programmes.loading ? <Loader label="Loading programmes…" /> : null}
           {programmes.error ? <ErrorMessage error={programmes.error} onRetry={programmes.reload} /> : null}
           {programmes.data ? (
-            <ul className="accreditation-list">
-              {programmes.data.map((programme) => (
-                <li key={programme.slug}>
-                  <ShieldCheckIcon size={22} />
+            <ul className="ab-accr">
+              {programmes.data.map((programme, index) => (
+                <Reveal as="li" key={programme.slug} delay={index * 100}>
+                  <span className="ab-accr-icon" aria-hidden="true">
+                    <ShieldCheck size={22} strokeWidth={1.9} />
+                  </span>
                   <span>
                     <strong>{programme.title}</strong> ({programme.level_label})
                     {programme.accreditation_note ? `: ${programme.accreditation_note}` : ''}
                   </span>
-                </li>
+                </Reveal>
               ))}
             </ul>
           ) : null}
         </div>
       </section>
 
-      <EnrollCta />
+      <Reveal variant="fade">
+        <EnrollCta />
+      </Reveal>
     </>
   );
 }

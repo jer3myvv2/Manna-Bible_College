@@ -1,14 +1,17 @@
+import { Check, Globe, Mail, Phone, Send } from 'lucide-react';
 import { useState } from 'react';
 import { getErrorMessage, getFieldErrors } from '../api/client';
 import { submitContact } from '../api/public';
 import ClassTimeBox from '../components/ClassTimeBox';
 import FormField from '../components/FormField';
-import { CheckIcon, GlobeIcon, MailIcon, PhoneIcon, WhatsAppIcon } from '../components/Icons';
+import { WhatsAppIcon } from '../components/Icons';
 import PageHero from '../components/PageHero';
+import Reveal from '../components/Reveal';
 import Seo from '../components/Seo';
 import { ErrorMessage, Loader } from '../components/Status';
 import { useSiteInfo, whatsappLink } from '../context/SiteInfoContext';
 import { EMAIL_PATTERN, isValidPhone } from '../utils/format';
+import '../styles/pages-modern.css';
 
 const INITIAL = { name: '', email: '', phone: '', subject: '', message: '', website: '' };
 
@@ -63,33 +66,41 @@ export default function Contact() {
       />
       <PageHero eyebrow="Get in touch" title="Contact Us" lead="We would love to hear from you. Call, WhatsApp or send us a message." />
 
-      <section className="section">
-        <div className="container contact-grid">
-          <div className="contact-info">
+      <section className="pm-section">
+        <div className="container cn-grid">
+          <div className="cn-info">
             {loading ? <Loader label="Loading contact details…" /> : null}
             {error ? <ErrorMessage error={error} onRetry={reload} /> : null}
             {info ? (
               <>
-                <h2 className="section-title section-title-sm">Contact details</h2>
-                <ul className="contact-cards">
-                  <li className="contact-card">
-                    <PhoneIcon size={26} />
+                <Reveal as="h2" className="pm-title pm-title-left pm-title-sm">
+                  Contact details
+                </Reveal>
+                <ul className="cn-cards">
+                  <Reveal as="li" className="cn-card">
+                    <span className="cn-icon" aria-hidden="true">
+                      <Phone size={24} strokeWidth={1.9} />
+                    </span>
                     <div>
                       <h3>Call us</h3>
                       <a href={info.phone_href}>{info.phone}</a>
                     </div>
-                  </li>
-                  <li className="contact-card">
-                    <WhatsAppIcon size={26} />
+                  </Reveal>
+                  <Reveal as="li" delay={90} className="cn-card">
+                    <span className="cn-icon" aria-hidden="true">
+                      <WhatsAppIcon size={24} />
+                    </span>
                     <div>
                       <h3>WhatsApp</h3>
                       <a href={info.whatsapp_url} target="_blank" rel="noopener noreferrer">
                         {info.whatsapp}
                       </a>
                     </div>
-                  </li>
-                  <li className="contact-card">
-                    <MailIcon size={26} />
+                  </Reveal>
+                  <Reveal as="li" delay={180} className="cn-card">
+                    <span className="cn-icon" aria-hidden="true">
+                      <Mail size={24} strokeWidth={1.9} />
+                    </span>
                     <div>
                       <h3>Email</h3>
                       {info.emails.map((email) => (
@@ -98,9 +109,11 @@ export default function Contact() {
                         </a>
                       ))}
                     </div>
-                  </li>
-                  <li className="contact-card">
-                    <GlobeIcon size={26} />
+                  </Reveal>
+                  <Reveal as="li" delay={270} className="cn-card">
+                    <span className="cn-icon" aria-hidden="true">
+                      <Globe size={24} strokeWidth={1.9} />
+                    </span>
                     <div>
                       <h3>Websites</h3>
                       {info.websites.map((site) => (
@@ -109,11 +122,11 @@ export default function Contact() {
                         </a>
                       ))}
                     </div>
-                  </li>
+                  </Reveal>
                 </ul>
-                <div className="contact-quick">
+                <Reveal className="cn-quick">
                   <a className="btn btn-maroon" href={info.phone_href}>
-                    <PhoneIcon size={20} /> Call now
+                    <Phone size={20} strokeWidth={2} aria-hidden="true" /> Call now
                   </a>
                   <a
                     className="btn btn-whatsapp"
@@ -124,15 +137,17 @@ export default function Contact() {
                     <WhatsAppIcon size={20} /> WhatsApp us
                   </a>
                   <a className="btn btn-outline" href={`mailto:${info.emails[0]}`}>
-                    <MailIcon size={20} /> Email us
+                    <Mail size={20} strokeWidth={2} aria-hidden="true" /> Email us
                   </a>
-                </div>
-                <ClassTimeBox />
+                </Reveal>
+                <Reveal>
+                  <ClassTimeBox />
+                </Reveal>
               </>
             ) : null}
           </div>
 
-          <div>
+          <Reveal variant="right" delay={150}>
             <form className="form-card" onSubmit={handleSubmit} noValidate aria-labelledby="contact-form-heading">
               <h2 id="contact-form-heading" className="form-step-title">
                 Send us a message
@@ -140,8 +155,8 @@ export default function Contact() {
 
               {status.sent ? (
                 <div className="alert alert-success" role="status">
-                  <CheckIcon size={20} strokeWidth={2.6} /> Thank you! Your message has been sent. We will get back to
-                  you soon.
+                  <Check size={20} strokeWidth={2.6} aria-hidden="true" /> Thank you! Your message has been sent. We
+                  will get back to you soon.
                 </div>
               ) : null}
 
@@ -217,11 +232,17 @@ export default function Contact() {
 
               <div className="form-actions form-actions-end">
                 <button type="submit" className="btn btn-gold" disabled={status.sending}>
-                  {status.sending ? 'Sending…' : 'Send message'}
+                  {status.sending ? (
+                    'Sending…'
+                  ) : (
+                    <>
+                      Send message <Send size={18} strokeWidth={2.1} aria-hidden="true" />
+                    </>
+                  )}
                 </button>
               </div>
             </form>
-          </div>
+          </Reveal>
         </div>
       </section>
     </>

@@ -1,14 +1,17 @@
+import { ArrowLeft, ArrowRight, Check, Pencil, Send } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { getErrorMessage, getFieldErrors } from '../api/client';
 import { getLevels, getProgrammes, submitApplication } from '../api/public';
 import FormField from '../components/FormField';
-import { CheckIcon, WhatsAppIcon } from '../components/Icons';
+import { WhatsAppIcon } from '../components/Icons';
 import PageHero from '../components/PageHero';
+import Reveal from '../components/Reveal';
 import Seo from '../components/Seo';
 import { ErrorMessage, Loader } from '../components/Status';
 import { useSiteInfo, whatsappLink } from '../context/SiteInfoContext';
 import useApi from '../hooks/useApi';
+import '../styles/pages-modern.css';
 import { EMAIL_PATTERN, isValidPhone } from '../utils/format';
 
 const STEPS = [
@@ -210,7 +213,7 @@ export default function Apply() {
           <div className="container narrow">
             <div className="success-card" role="status">
               <span className="success-icon" aria-hidden="true">
-                <CheckIcon size={36} strokeWidth={2.4} />
+                <Check size={36} strokeWidth={2.4} />
               </span>
               <h2 ref={headingRef} tabIndex={-1}>
                 Your application has been received
@@ -256,7 +259,7 @@ export default function Apply() {
 
       <section className="section">
         <div className="container narrow">
-          <ol className="stepper">
+          <Reveal as="ol" className="stepper">
             {STEPS.map((item, index) => (
               <li
                 key={item.title}
@@ -264,13 +267,14 @@ export default function Apply() {
                 aria-current={index === step ? 'step' : undefined}
               >
                 <span className="stepper-dot" aria-hidden="true">
-                  {index < step ? <CheckIcon size={16} strokeWidth={3} /> : index + 1}
+                  {index < step ? <Check size={16} strokeWidth={3} /> : index + 1}
                 </span>
                 <span className="stepper-label">{item.title}</span>
               </li>
             ))}
-          </ol>
+          </Reveal>
 
+          <Reveal delay={120}>
           <form ref={formRef} className="form-card" onSubmit={handleSubmit} noValidate>
             <h2 ref={headingRef} tabIndex={-1} className="form-step-title">
               <span className="form-step-count">
@@ -549,22 +553,29 @@ export default function Apply() {
             <div className="form-actions">
               {step > 0 ? (
                 <button type="button" className="btn btn-outline" onClick={goBack} disabled={submitting}>
-                  Back
+                  <ArrowLeft size={18} strokeWidth={2.2} aria-hidden="true" /> Back
                 </button>
               ) : (
                 <span />
               )}
               {step < STEPS.length - 1 ? (
                 <button type="submit" className="btn btn-maroon">
-                  Continue
+                  Continue <ArrowRight size={18} strokeWidth={2.2} aria-hidden="true" />
                 </button>
               ) : (
                 <button type="submit" className="btn btn-gold" disabled={submitting}>
-                  {submitting ? 'Submitting…' : 'Submit application'}
+                  {submitting ? (
+                    'Submitting…'
+                  ) : (
+                    <>
+                      Submit application <Send size={18} strokeWidth={2.1} aria-hidden="true" />
+                    </>
+                  )}
                 </button>
               )}
             </div>
           </form>
+          </Reveal>
         </div>
       </section>
     </>
@@ -577,7 +588,7 @@ function ReviewSection({ title, onEdit, children }) {
       <div className="review-section-head">
         <h3>{title}</h3>
         <button type="button" className="btn btn-link" onClick={onEdit}>
-          Edit<span className="sr-only"> {title}</span>
+          <Pencil size={14} strokeWidth={2.2} aria-hidden="true" /> Edit<span className="sr-only"> {title}</span>
         </button>
       </div>
       <dl>{children}</dl>
