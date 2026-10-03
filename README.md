@@ -57,6 +57,14 @@ npm run dev                        # http://localhost:5173
 
 Admin dashboard: <http://localhost:5173/admin/login>, using the `ADMIN_USERNAME` / `ADMIN_PASSWORD` from `backend/.env`.
 
+### Admin dashboard
+
+- **Sidebar:** grouped navigation with live badges (new applications, unread messages). It collapses to an icon rail (remembered per browser) and becomes a slide-out drawer on phones.
+- **Frosted top bar:** page title, notification bell and an account menu (Settings, View website, Log out).
+- **Live notifications:** the dashboard checks `GET /api/admin/notifications` every 15 seconds (every 60 s while the tab is in the background). New applications and messages pop up as toasts, update the bell and badges, and refresh the dashboard and the Applications/Messages lists. A sound and desktop notifications can be switched on in **Settings**. This uses polling rather than WebSockets, so it works on a plain Gunicorn deployment.
+- **Charts (Recharts):** KPI tiles with week-on-week change, applications over time, status, programme and level, all scoped by a 7/30/90-day filter and counted in East Africa Time (`LOCAL_UTC_OFFSET_HOURS`). Every chart has a Table view. Chart colours were checked for colour-blind safety and contrast (`#9b2240` maroon, `#b8860b` gold).
+- **Settings:** change the password (other devices are signed out; this one stays signed in), set the email that receives reset links, and choose notification preferences.
+
 ### Forgot password
 
 The sign-in page has a show/hide (eye) button on the password field and a **Forgot password?** link. It emails a

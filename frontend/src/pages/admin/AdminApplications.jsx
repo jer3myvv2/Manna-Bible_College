@@ -4,6 +4,7 @@ import { exportApplications, getApplications, getLevels, getProgrammes, updateAp
 import { DownloadIcon, SearchIcon } from '../../components/Icons';
 import { ErrorMessage, Loader } from '../../components/Status';
 import useAction from '../../hooks/useAction';
+import { useLiveVersion } from '../../context/AdminNotifications';
 import useApi from '../../hooks/useApi';
 import { formatDate } from '../../utils/format';
 
@@ -20,9 +21,9 @@ export default function AdminApplications() {
     programme_id: '',
     level: '',
     status: searchParams.get('status') || '',
-    q: '',
+    q: searchParams.get('q') || '',
   });
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState(searchParams.get('q') || '');
   const [page, setPage] = useState(1);
   const [expandedId, setExpandedId] = useState(null);
   const [savingId, setSavingId] = useState(null);
@@ -32,7 +33,16 @@ export default function AdminApplications() {
   const programmes = useApi(getProgrammes, []);
   const levels = useApi(getLevels, []);
   const params = compact({ ...filters, page, per_page: PER_PAGE });
-  const applications = useApi(() => getApplications(params), [JSON.stringify(params)]);
+  const version = useLiveVersion(); // refetch when new applications arrive
+  const applications = useApi(() => getApplications(params), [JSON.stringify(params), version]);
+
+  // Links from notifications and the dashboard set ?q= / ?status= while this page is open.
+  const urlQuery = searchParams.get('q');
+  const urlStatus = searchParams.get('status');
+  useEffect(() => {
+    if (urlQuery !== null) setSearch(urlQuery);
+    if (urlStatus !== null) setFilters((current) => ({ ...current, status: urlStatus }));
+  }, [urlQuery, urlStatus]);
 
   // Debounce the search box so we don't query on every keystroke.
   useEffect(() => {

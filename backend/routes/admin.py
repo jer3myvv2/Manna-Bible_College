@@ -4,9 +4,10 @@ import hashlib
 import hmac
 import io
 import re
-from datetime import datetime
+from collections import Counter
+from datetime import datetime, time, timedelta
 
-from flask import Blueprint, Response, current_app, jsonify, request
+from flask import Blueprint, Response, current_app, g, jsonify, request
 from flask_jwt_extended import create_access_token, get_jwt, get_jwt_identity, verify_jwt_in_request
 from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
 from sqlalchemy import func, or_
@@ -25,7 +26,9 @@ from models import (
     Programme,
     Unit,
     db,
+    iso,
     to_roman,
+    utcnow,
 )
 from mailer import mail_configured, send_email
 from utils import (
@@ -33,6 +36,7 @@ from utils import (
     clean_text,
     csv_safe,
     get_json_body,
+    is_valid_email,
     json_error,
     parse_bool,
     parse_int,
@@ -75,7 +79,16 @@ def require_admin():
         return json_error("Your session is no longer valid. Please log in again.", 401)
     if get_jwt().get("pwv") != password_fingerprint(admin):
         return json_error("Your password was changed. Please log in again.", 401)
+    g.admin = admin
     return None
+
+
+def issue_token(admin):
+    """JWT for an admin. It stops working when the password changes (pwv claim)."""
+    return create_access_token(
+        identity=str(admin.id),
+        additional_claims={"username": admin.username, "pwv": password_fingerprint(admin)},
+    )
 
 
 def _levels():
@@ -107,11 +120,7 @@ def login():
     if admin is None or not admin.check_password(password):
         return json_error("Invalid username or password.", 401)
 
-    token = create_access_token(
-        identity=str(admin.id),
-        additional_claims={"username": admin.username, "pwv": password_fingerprint(admin)},
-    )
-    return jsonify({"access_token": token, "admin": admin.to_dict()})
+    return jsonify({"access_token": issue_token(admin), "admin": admin.to_dict()})
 
 
 # ---------------------------------------------------------------------------
@@ -245,10 +254,138 @@ def reset_password():
     return jsonify({"message": "Your password has been changed. You can now sign in with it."})
 
 
+# ---------------------------------------------------------------------------
+# Account settings
+# ---------------------------------------------------------------------------
 @bp.get("/me")
 def me():
-    admin = db.session.get(AdminUser, int(get_jwt_identity()))
-    return jsonify(admin.to_dict())
+    return jsonify(g.admin.to_dict())
+
+
+@bp.patch("/me")
+def update_me():
+    """Update the signed-in admin's email (where password reset links are sent)."""
+    data, error = get_json_body()
+    if error:
+        return error
+    email = str(data.get("email") or "").strip().lower()
+    if email and not is_valid_email(email):
+        return validation_error({"email": "Enter a valid email address, e.g. name@example.com."})
+    if email:
+        clash = AdminUser.query.filter(func.lower(AdminUser.email) == email, AdminUser.id != g.admin.id).first()
+        if clash:
+            return validation_error({"email": "Another admin account already uses this email."})
+    g.admin.email = email or None
+    db.session.commit()
+    return jsonify(g.admin.to_dict())
+
+
+@bp.post("/me/password")
+@rate_limit(limit=10, window=900, scope="admin-change-password")
+def change_password():
+    """Change password while signed in. Returns a fresh token; other devices are signed out."""
+    data, error = get_json_body()
+    if error:
+        return error
+    current = str(data.get("current_password") or "")
+    new = str(data.get("new_password") or "")
+    errors = {}
+    if not current:
+        errors["current_password"] = "Enter your current password."
+    elif not g.admin.check_password(current):
+        errors["current_password"] = "Your current password is not correct."
+    problem = password_problem(new, g.admin.username)
+    if problem:
+        errors["new_password"] = problem
+    elif current and new == current:
+        errors["new_password"] = "Choose a password that is different from your current one."
+    if errors:
+        return validation_error(errors)
+
+    g.admin.set_password(new)
+    db.session.commit()
+    current_app.logger.info("Admin '%s' changed their password.", g.admin.username)
+    return jsonify(
+        {
+            "message": "Your password has been changed. Any other devices have been signed out.",
+            "access_token": issue_token(g.admin),
+        }
+    )
+
+
+# ---------------------------------------------------------------------------
+# Live notifications (the dashboard polls this endpoint)
+# ---------------------------------------------------------------------------
+def _notifications_cutoff(admin):
+    """Activity after this moment counts as unread. Before the bell is first opened,
+    only the last 7 days count, so a new admin is not greeted by every old record."""
+    return admin.notifications_seen_at or (utcnow() - timedelta(days=7))
+
+
+@bp.get("/notifications")
+def notifications():
+    limit = 20
+    cutoff = _notifications_cutoff(g.admin)
+    applications = (
+        Application.query.options(selectinload(Application.programme))
+        .order_by(Application.created_at.desc(), Application.id.desc())
+        .limit(limit)
+        .all()
+    )
+    messages = (
+        ContactMessage.query.order_by(ContactMessage.created_at.desc(), ContactMessage.id.desc())
+        .limit(limit)
+        .all()
+    )
+
+    items = [
+        {
+            "id": f"application-{app_row.id}",
+            "type": "application",
+            "title": f"New application from {app_row.full_name}",
+            "body": f"{app_row.programme.short_title if app_row.programme else 'Programme'} · Level {app_row.level}",
+            "link": f"/admin/applications?q={app_row.reference}",
+            "created_at": iso(app_row.created_at),
+            "unread": app_row.created_at > cutoff,
+        }
+        for app_row in applications
+    ] + [
+        {
+            "id": f"message-{message.id}",
+            "type": "message",
+            "title": f"New message from {message.name}",
+            "body": message.subject,
+            "link": "/admin/messages",
+            "created_at": iso(message.created_at),
+            "unread": message.created_at > cutoff,
+        }
+        for message in messages
+    ]
+    items.sort(key=lambda item: item["created_at"], reverse=True)
+
+    unread_count = (
+        Application.query.filter(Application.created_at > cutoff).count()
+        + ContactMessage.query.filter(ContactMessage.created_at > cutoff).count()
+    )
+    return jsonify(
+        {
+            "items": items[:limit],
+            "unread_count": unread_count,
+            "seen_at": iso(g.admin.notifications_seen_at),
+            "counts": {
+                "new_applications": Application.query.filter_by(status="New").count(),
+                "unread_messages": ContactMessage.query.filter_by(is_read=False).count(),
+            },
+            "server_time": iso(utcnow()),
+        }
+    )
+
+
+@bp.post("/notifications/seen")
+def mark_notifications_seen():
+    g.admin.notifications_seen_at = utcnow()
+    db.session.commit()
+    return jsonify({"seen_at": iso(g.admin.notifications_seen_at), "unread_count": 0})
 
 
 # ---------------------------------------------------------------------------
@@ -289,12 +426,15 @@ def stats():
     recent = (
         Application.query.options(selectinload(Application.programme))
         .order_by(Application.created_at.desc(), Application.id.desc())
-        .limit(5)
+        .limit(6)
         .all()
     )
 
+    days = min(max(parse_int(request.args.get("days")) or 30, 1), 365)
     return jsonify(
         {
+            "kpis": _kpis(),
+            "range": _range_stats(days),
             "totals": {
                 "applications": Application.query.count(),
                 "new_applications": by_status.get("New", 0),
@@ -311,6 +451,85 @@ def stats():
             "recent_applications": [application.to_dict() for application in recent],
         }
     )
+
+
+def _local_offset():
+    return timedelta(hours=current_app.config.get("LOCAL_UTC_OFFSET_HOURS", 3))
+
+
+def _local_today():
+    return (utcnow() + _local_offset()).date()
+
+
+def _utc_start_of(local_date):
+    """UTC moment at which a local (East Africa Time) calendar day starts."""
+    return datetime.combine(local_date, time.min) - _local_offset()
+
+
+def _daily_counts(model, first_day, days):
+    """Records per local calendar day, oldest first, with zero-filled gaps."""
+    offset = _local_offset()
+    rows = model.query.with_entities(model.created_at).filter(model.created_at >= _utc_start_of(first_day)).all()
+    counts = Counter((created_at + offset).date() for (created_at,) in rows)
+    return [counts.get(first_day + timedelta(days=step), 0) for step in range(days)]
+
+
+def _kpis():
+    """Last 7 days vs the 7 days before, plus a 14-day daily trend for sparklines."""
+    today = _local_today()
+    first_day = today - timedelta(days=13)
+    applications = _daily_counts(Application, first_day, 14)
+    messages = _daily_counts(ContactMessage, first_day, 14)
+    return {
+        "applications_last_7": sum(applications[7:]),
+        "applications_prev_7": sum(applications[:7]),
+        "messages_last_7": sum(messages[7:]),
+        "messages_prev_7": sum(messages[:7]),
+        "applications_daily_14": applications,
+        "dates_14": [(first_day + timedelta(days=step)).isoformat() for step in range(14)],
+    }
+
+
+def _range_stats(days):
+    """Everything the charts need for the selected date range (local days, inclusive of today)."""
+    today = _local_today()
+    first_day = today - timedelta(days=days - 1)
+    since = _utc_start_of(first_day)
+    in_range = (
+        Application.query.options(selectinload(Application.programme))
+        .filter(Application.created_at >= since)
+        .all()
+    )
+    applications_daily = _daily_counts(Application, first_day, days)
+    messages_daily = _daily_counts(ContactMessage, first_day, days)
+
+    status_counts = Counter(app_row.status for app_row in in_range)
+    level_counts = Counter(app_row.level for app_row in in_range)
+    programme_counts = Counter(app_row.programme_id for app_row in in_range)
+    return {
+        "days": days,
+        "start": first_day.isoformat(),
+        "end": today.isoformat(),
+        "applications": len(in_range),
+        "messages": sum(messages_daily),
+        "timeline": [
+            {
+                "date": (first_day + timedelta(days=step)).isoformat(),
+                "applications": applications_daily[step],
+                "messages": messages_daily[step],
+            }
+            for step in range(days)
+        ],
+        "by_status": [{"status": status, "count": status_counts.get(status, 0)} for status in APPLICATION_STATUSES],
+        "by_programme": [
+            {"programme_id": programme.id, "short_title": programme.short_title, "count": programme_counts.get(programme.id, 0)}
+            for programme in Programme.query.order_by(Programme.id)
+        ],
+        "by_level": [
+            {"level": level.level_number, "award": level.award, "count": level_counts.get(level.level_number, 0)}
+            for level in _levels()
+        ],
+    }
 
 
 # ---------------------------------------------------------------------------

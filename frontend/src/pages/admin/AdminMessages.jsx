@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { deleteMessage, getMessages, updateMessage } from '../../api/admin';
 import { ErrorMessage, Loader } from '../../components/Status';
 import useAction from '../../hooks/useAction';
+import { useLiveVersion } from '../../context/AdminNotifications';
 import useApi from '../../hooks/useApi';
 import { formatDate } from '../../utils/format';
 
 /** Contact-form inbox: read, mark read / unread, delete. */
 export default function AdminMessages() {
-  const messages = useApi(getMessages, []);
+  const version = useLiveVersion(); // refetch when new messages arrive
+  const messages = useApi(getMessages, [version]);
   const [openId, setOpenId] = useState(null);
   const [onlyUnread, setOnlyUnread] = useState(false);
   const [status, run] = useAction();

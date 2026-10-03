@@ -1,78 +1,85 @@
-import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { clearToken, getAdminName } from '../../api/client';
-import {
-  ClipboardCheckIcon,
-  GridIcon,
-  InboxIcon,
-  LayersIcon,
-  LogoutIcon,
-  MegaphoneIcon,
-  BookIcon,
-  AwardIcon,
-} from '../../components/Icons';
-import Logo from '../../components/Logo';
+import { useCallback, useEffect, useState } from 'react';
+import { Outlet, useLocation } from 'react-router-dom';
+import AdminSidebar from '../../components/admin/AdminSidebar';
+import AdminTopbar from '../../components/admin/AdminTopbar';
+import ToastStack from '../../components/admin/ToastStack';
 import Seo from '../../components/Seo';
+import { AdminNotificationsProvider } from '../../context/AdminNotifications';
+import '../../styles/admin-shell.css';
 
-const NAV = [
-  { to: '/admin', label: 'Overview', icon: GridIcon, end: true },
-  { to: '/admin/applications', label: 'Applications', icon: ClipboardCheckIcon },
-  { to: '/admin/messages', label: 'Messages', icon: InboxIcon },
-  { to: '/admin/programmes', label: 'Programmes', icon: LayersIcon },
-  { to: '/admin/electives', label: 'Short courses', icon: BookIcon },
-  { to: '/admin/announcements', label: 'Announcements', icon: MegaphoneIcon },
-  { to: '/admin/levels', label: 'Levels', icon: AwardIcon },
+const TITLES = [
+  ['/admin/applications', 'Applications'],
+  ['/admin/messages', 'Messages'],
+  ['/admin/programmes', 'Programmes'],
+  ['/admin/electives', 'Short courses'],
+  ['/admin/announcements', 'Announcements'],
+  ['/admin/levels', 'Levels'],
+  ['/admin/settings', 'Settings'],
 ];
+const COLLAPSE_KEY = 'manna_admin_sidebar';
 
-/** Admin shell: sidebar navigation (tabs on mobile) and a top bar with logout. */
+function readCollapsed() {
+  try {
+    return window.localStorage.getItem(COLLAPSE_KEY) === 'collapsed';
+  } catch {
+    return false;
+  }
+}
+
+/** Admin shell: sidebar, frosted top bar, live notification toasts and the page outlet. */
 export default function AdminLayout() {
-  const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const [collapsed, setCollapsed] = useState(readCollapsed);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const title = TITLES.find(([path]) => pathname.startsWith(path))?.[1] || 'Dashboard';
 
-  const logout = () => {
-    clearToken();
-    navigate('/admin/login', { replace: true });
-  };
+  useEffect(() => setMobileOpen(false), [pathname]);
+
+  // Phone drawer: Escape closes it and the page behind does not scroll.
+  useEffect(() => {
+    if (!mobileOpen) return undefined;
+    const onKey = (event) => event.key === 'Escape' && setMobileOpen(false);
+    document.addEventListener('keydown', onKey);
+    document.body.classList.add('nav-open');
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.classList.remove('nav-open');
+    };
+  }, [mobileOpen]);
+
+  const toggleCollapsed = useCallback(() => {
+    setCollapsed((value) => {
+      try {
+        window.localStorage.setItem(COLLAPSE_KEY, value ? 'expanded' : 'collapsed');
+      } catch {
+        /* ignore storage errors */
+      }
+      return !value;
+    });
+  }, []);
 
   return (
-    <div className="admin-shell">
-      <Seo title="Admin" noIndex />
-      <aside className="admin-sidebar">
-        <Link to="/admin" className="admin-brand">
-          <Logo size={40} decorative />
-          <span>
-            Manna Admin
-            <small>Dashboard</small>
-          </span>
-        </Link>
-        <nav aria-label="Admin navigation">
-          <ul className="admin-nav">
-            {NAV.map(({ to, label, icon: Icon, end }) => (
-              <li key={to}>
-                <NavLink to={to} end={end} className="admin-nav-link">
-                  <Icon size={20} /> <span>{label}</span>
-                </NavLink>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      </aside>
-      <div className="admin-main">
-        <header className="admin-topbar">
-          <span>
-            Signed in as <strong>{getAdminName()}</strong>
-          </span>
-          <div className="admin-topbar-actions">
-            <a href="/" target="_blank" rel="noopener noreferrer" className="btn btn-sm btn-outline">
-              View website
-            </a>
-            <button type="button" className="btn btn-sm btn-maroon" onClick={logout}>
-              <LogoutIcon size={18} /> Log out
-            </button>
-          </div>
-        </header>
-        <main className="admin-content" id="main-content">
-          <Outlet />
-        </main>
+    <AdminNotificationsProvider>
+      <div className={`ash ${collapsed ? 'is-collapsed' : ''}`}>
+        <Seo title={`${title} · Admin`} noIndex />
+        <a href="#admin-content" className="skip-link">
+          Skip to content
+        </a>
+        <AdminSidebar
+          collapsed={collapsed}
+          onToggleCollapsed={toggleCollapsed}
+          mobileOpen={mobileOpen}
+          onCloseMobile={() => setMobileOpen(false)}
+        />
+        {mobileOpen ? <div className="ash-backdrop" aria-hidden="true" onClick={() => setMobileOpen(false)} /> : null}
+        <div className="ash-main">
+          <AdminTopbar title={title} menuOpen={mobileOpen} onOpenMenu={() => setMobileOpen(true)} />
+          <main id="admin-content" className="admin-content" tabIndex={-1}>
+            <Outlet />
+          </main>
+        </div>
+        <ToastStack />
       </div>
-    </div>
+    </AdminNotificationsProvider>
   );
 }

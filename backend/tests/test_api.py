@@ -43,7 +43,9 @@ class ApiTestCase(unittest.TestCase):
 
     def tearDown(self):
         with self.app.app_context():
+            db.session.remove()
             db.drop_all()
+            db.engine.dispose()  # close the in-memory database connection
 
     def login(self):
         res = self.client.post("/api/admin/login", json={"username": "admin", "password": "secret-password"})
@@ -269,6 +271,79 @@ class ApiTestCase(unittest.TestCase):
         expired = self.client.post("/api/admin/reset-password/check", json={"token": token})
         self.assertEqual(expired.status_code, 400)
         self.assertIn("expired", expired.get_json()["error"])
+
+    # Settings ---------------------------------------------------------------
+    def test_change_password_from_settings(self):
+        headers = self.login()
+        wrong = self.client.post(
+            "/api/admin/me/password",
+            json={"current_password": "nope", "new_password": "Better1password"},
+            headers=headers,
+        )
+        self.assertEqual(wrong.status_code, 400)
+        self.assertIn("current_password", wrong.get_json()["fields"])
+        same = self.client.post(
+            "/api/admin/me/password",
+            json={"current_password": "secret-password", "new_password": "secret-password"},
+            headers=headers,
+        )
+        self.assertIn("new_password", same.get_json()["fields"])
+        ok = self.client.post(
+            "/api/admin/me/password",
+            json={"current_password": "secret-password", "new_password": "Better1password"},
+            headers=headers,
+        )
+        self.assertEqual(ok.status_code, 200, ok.get_json())
+        new_headers = {"Authorization": f"Bearer {ok.get_json()['access_token']}"}
+        # The old token (other devices) is signed out; the returned token keeps working
+        self.assertEqual(self.client.get("/api/admin/me", headers=headers).status_code, 401)
+        self.assertEqual(self.client.get("/api/admin/me", headers=new_headers).status_code, 200)
+        login = self.client.post("/api/admin/login", json={"username": "admin", "password": "Better1password"})
+        self.assertEqual(login.status_code, 200)
+
+    def test_update_email(self):
+        headers = self.login()
+        bad = self.client.patch("/api/admin/me", json={"email": "not-an-email"}, headers=headers)
+        self.assertEqual(bad.status_code, 400)
+        ok = self.client.patch("/api/admin/me", json={"email": "Admin@Example.com"}, headers=headers)
+        self.assertEqual(ok.get_json()["email"], "admin@example.com")
+        cleared = self.client.patch("/api/admin/me", json={"email": ""}, headers=headers)
+        self.assertIsNone(cleared.get_json()["email"])
+
+    # Notifications ----------------------------------------------------------
+    def test_notifications_unread_and_seen(self):
+        headers = self.login()
+        self.client.post("/api/applications", json={**VALID_APPLICATION, "programme_id": self.programme_id})
+        self.client.post(
+            "/api/contact",
+            json={"name": "Peter", "email": "peter@example.com", "subject": "Fees", "message": "Please send me details."},
+        )
+        data = self.client.get("/api/admin/notifications", headers=headers).get_json()
+        self.assertEqual(data["unread_count"], 2)
+        self.assertEqual({item["type"] for item in data["items"]}, {"application", "message"})
+        self.assertTrue(all(item["unread"] for item in data["items"]))
+        self.assertEqual(data["counts"], {"new_applications": 1, "unread_messages": 1})
+        self.assertTrue(data["items"][0]["link"].startswith("/admin/"))
+
+        self.client.post("/api/admin/notifications/seen", headers=headers)
+        self.assertEqual(self.client.get("/api/admin/notifications", headers=headers).get_json()["unread_count"], 0)
+        self.client.post("/api/applications", json={**VALID_APPLICATION, "programme_id": self.programme_id})
+        after = self.client.get("/api/admin/notifications", headers=headers).get_json()
+        self.assertEqual(after["unread_count"], 1)
+
+    def test_stats_date_range(self):
+        headers = self.login()
+        self.client.post("/api/applications", json={**VALID_APPLICATION, "programme_id": self.programme_id})
+        data = self.client.get("/api/admin/stats?days=7", headers=headers).get_json()
+        self.assertEqual(data["range"]["days"], 7)
+        self.assertEqual(len(data["range"]["timeline"]), 7)
+        self.assertEqual(data["range"]["applications"], 1)
+        self.assertEqual(data["range"]["timeline"][-1]["applications"], 1)
+        self.assertEqual(sum(row["count"] for row in data["range"]["by_status"]), 1)
+        self.assertEqual(sum(row["count"] for row in data["range"]["by_level"]), 1)
+        self.assertEqual(data["kpis"]["applications_last_7"], 1)
+        self.assertEqual(len(data["kpis"]["applications_daily_14"]), 14)
+        self.assertEqual(len(self.client.get("/api/admin/stats?days=90", headers=headers).get_json()["range"]["timeline"]), 90)
 
     def test_unknown_api_route_is_json(self):
         res = self.client.get("/api/nope")

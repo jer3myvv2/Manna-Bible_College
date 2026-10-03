@@ -26,6 +26,7 @@ const AdminProgrammeEdit = lazy(() => import('./pages/admin/AdminProgrammeEdit')
 const AdminElectives = lazy(() => import('./pages/admin/AdminElectives'));
 const AdminAnnouncements = lazy(() => import('./pages/admin/AdminAnnouncements'));
 const AdminLevels = lazy(() => import('./pages/admin/AdminLevels'));
+const AdminSettings = lazy(() => import('./pages/admin/AdminSettings'));
 
 export default function App() {
   return (
@@ -63,6 +64,7 @@ export default function App() {
             <Route path="electives" element={<AdminElectives />} />
             <Route path="announcements" element={<AdminAnnouncements />} />
             <Route path="levels" element={<AdminLevels />} />
+            <Route path="settings" element={<AdminSettings />} />
           </Route>
         </Routes>
       </Suspense>

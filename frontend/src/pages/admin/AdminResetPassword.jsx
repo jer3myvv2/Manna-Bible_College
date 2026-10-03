@@ -4,17 +4,8 @@ import { clearToken, getErrorMessage, getFieldErrors } from '../../api/client';
 import { checkResetToken, resetPassword } from '../../api/admin';
 import PasswordField from '../../components/PasswordField';
 import { Loader } from '../../components/Status';
+import { PASSWORD_HINT, passwordProblem } from '../../utils/password';
 import AdminAuthCard from './AdminAuthCard';
-
-/** Same rules as the server, so problems show before submitting. */
-function passwordProblem(password, username) {
-  if (password.length < 8) return 'Use at least 8 characters.';
-  if (!/[A-Za-z]/.test(password) || !/\d/.test(password)) return 'Use a mix of letters and numbers.';
-  if (username && password.toLowerCase() === username.toLowerCase()) {
-    return 'Your password cannot be the same as your username.';
-  }
-  return '';
-}
 
 /** Step 2 of password recovery: the link from the email lands here. */
 export default function AdminResetPassword() {
@@ -104,7 +95,7 @@ export default function AdminResetPassword() {
         <PasswordField
           id="password"
           label="New password"
-          hint="At least 8 characters, with letters and numbers."
+          hint={PASSWORD_HINT}
           autoComplete="new-password"
           value={values.password}
           onChange={handleChange}

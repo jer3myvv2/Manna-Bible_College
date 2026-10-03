@@ -92,6 +92,9 @@ class Config:
     # Basic in-memory rate limiting for the public forms and the admin login.
     RATE_LIMIT_ENABLED = _env_bool("RATE_LIMIT_ENABLED", True)
 
+    # Dashboard charts count days in East Africa Time (UTC+3).
+    LOCAL_UTC_OFFSET_HOURS = int(os.environ.get("LOCAL_UTC_OFFSET_HOURS", "3"))
+
     # Application reference numbers look like MC-2026-0001.
     APPLICATION_REF_PREFIX = os.environ.get("APPLICATION_REF_PREFIX", "MC")
 

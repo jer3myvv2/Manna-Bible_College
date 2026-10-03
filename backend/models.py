@@ -308,6 +308,7 @@ class AdminUser(db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120))  # where password reset links are sent
     password_hash = db.Column(db.String(255), nullable=False)
+    notifications_seen_at = db.Column(db.DateTime)  # last time the notification bell was opened
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -316,7 +317,12 @@ class AdminUser(db.Model):
         return check_password_hash(self.password_hash, password)
 
     def to_dict(self):
-        return {"id": self.id, "username": self.username, "email": self.email}
+        return {
+            "id": self.id,
+            "username": self.username,
+            "email": self.email,
+            "notifications_seen_at": iso(self.notifications_seen_at),
+        }
 
 
 def upgrade_schema():
@@ -326,7 +332,7 @@ def upgrade_schema():
     tables are added here (there is no migration tool in this project).
     """
     added_columns = {
-        "admin_users": {"email": "VARCHAR(120)"},
+        "admin_users": {"email": "VARCHAR(120)", "notifications_seen_at": "DATETIME"},
     }
     inspector = inspect(db.engine)
     tables = set(inspector.get_table_names())

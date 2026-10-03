@@ -9,7 +9,17 @@ export const login = (username, password) => data(client.post('/admin/login', { 
 export const forgotPassword = (identifier) => data(client.post('/admin/forgot-password', { identifier }));
 export const checkResetToken = (token) => data(client.post('/admin/reset-password/check', { token }));
 export const resetPassword = (token, password) => data(client.post('/admin/reset-password', { token, password }));
-export const getStats = () => data(client.get('/admin/stats'));
+export const getStats = (params = {}) => data(client.get('/admin/stats', { params }));
+
+// Signed-in admin: settings
+export const getMe = () => data(client.get('/admin/me'));
+export const updateMe = (payload) => data(client.patch('/admin/me', payload));
+export const changePassword = (currentPassword, newPassword) =>
+  data(client.post('/admin/me/password', { current_password: currentPassword, new_password: newPassword }));
+
+// Live notifications
+export const getNotifications = () => data(client.get('/admin/notifications'));
+export const markNotificationsSeen = () => data(client.post('/admin/notifications/seen'));
 
 // Applications
 export const getApplications = (params) => data(client.get('/admin/applications', { params }));
