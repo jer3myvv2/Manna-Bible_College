@@ -95,6 +95,21 @@ class Config:
     # Application reference numbers look like MC-2026-0001.
     APPLICATION_REF_PREFIX = os.environ.get("APPLICATION_REF_PREFIX", "MC")
 
+    # Admin password reset. Links point at FRONTEND_URL (never at the request's Host
+    # header, so a forged request cannot make the email link to another site).
+    FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:5173").rstrip("/")
+    PASSWORD_RESET_MAX_AGE = int(os.environ.get("PASSWORD_RESET_MINUTES", "30")) * 60
+
+    # Outgoing email (SMTP). Without MAIL_SERVER, reset links are written to the
+    # server log instead of being emailed, which is handy in development.
+    MAIL_SERVER = os.environ.get("MAIL_SERVER", "")
+    MAIL_PORT = int(os.environ.get("MAIL_PORT", "587"))
+    MAIL_USERNAME = os.environ.get("MAIL_USERNAME", "")
+    MAIL_PASSWORD = os.environ.get("MAIL_PASSWORD", "")
+    MAIL_USE_TLS = _env_bool("MAIL_USE_TLS", True)
+    MAIL_USE_SSL = _env_bool("MAIL_USE_SSL", False)
+    MAIL_FROM = os.environ.get("MAIL_FROM", "") or MAIL_USERNAME
+
     SITE_INFO = SITE_INFO
 
 
@@ -104,3 +119,5 @@ class TestConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = "sqlite://"
     RATE_LIMIT_ENABLED = False
+    MAIL_SERVER = ""
+    FRONTEND_URL = "http://localhost:5173"

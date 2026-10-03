@@ -15,6 +15,8 @@ import ShortCourses from './pages/ShortCourses';
 
 // Admin pages are loaded on demand so public visitors (mostly on phones) download less.
 const AdminLogin = lazy(() => import('./pages/admin/AdminLogin'));
+const AdminForgotPassword = lazy(() => import('./pages/admin/AdminForgotPassword'));
+const AdminResetPassword = lazy(() => import('./pages/admin/AdminResetPassword'));
 const AdminLayout = lazy(() => import('./pages/admin/AdminLayout'));
 const AdminOverview = lazy(() => import('./pages/admin/AdminOverview'));
 const AdminApplications = lazy(() => import('./pages/admin/AdminApplications'));
@@ -43,6 +45,8 @@ export default function App() {
           </Route>
 
           <Route path="admin/login" element={<AdminLogin />} />
+          <Route path="admin/forgot-password" element={<AdminForgotPassword />} />
+          <Route path="admin/reset-password" element={<AdminResetPassword />} />
           <Route
             path="admin"
             element={

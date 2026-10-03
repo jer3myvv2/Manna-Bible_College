@@ -13,7 +13,7 @@ from werkzeug.exceptions import HTTPException
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from config import Config
-from models import db
+from models import db, upgrade_schema
 from routes.admin import bp as admin_bp
 from routes.public import bp as public_bp
 from utils import json_error
@@ -47,6 +47,7 @@ def create_app(config_class=Config):
 
     with app.app_context():
         db.create_all()
+        upgrade_schema()
 
     if not app.debug and not app.testing and "dev-only" in (app.config["SECRET_KEY"] + app.config["JWT_SECRET_KEY"]):
         app.logger.warning("SECRET_KEY / JWT_SECRET_KEY are using development defaults. Set them in backend/.env.")

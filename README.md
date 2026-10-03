@@ -57,6 +57,18 @@ npm run dev                        # http://localhost:5173
 
 Admin dashboard: <http://localhost:5173/admin/login>, using the `ADMIN_USERNAME` / `ADMIN_PASSWORD` from `backend/.env`.
 
+### Forgot password
+
+The sign-in page has a show/hide (eye) button on the password field and a **Forgot password?** link. It emails a
+one-time reset link to the admin's `ADMIN_EMAIL`. The link expires after 30 minutes (`PASSWORD_RESET_MINUTES`), and
+changing the password signs out every existing admin session.
+
+- **Development:** leave `MAIL_SERVER` empty. The reset link is printed in the Flask terminal instead of being emailed.
+- **Production:** set `ADMIN_EMAIL`, `FRONTEND_URL` (e.g. `https://www.mannacollege.ac.ke`) and the `MAIL_*` SMTP
+  settings in `backend/.env`, then run `python seed.py` to save the admin's email. With Gmail, use an
+  [app password](https://support.google.com/accounts/answer/185833), not the account password.
+- Existing databases get the new `admin_users.email` column automatically when the backend starts.
+
 > **macOS note:** macOS's AirPlay Receiver can occupy port 5000. If Flask fails to start, either turn off
 > *System Settings → General → AirDrop & Handoff → AirPlay Receiver*, or run
 > `flask --app app run --debug --port 5001` and set `VITE_API_URL=http://localhost:5001/api`.

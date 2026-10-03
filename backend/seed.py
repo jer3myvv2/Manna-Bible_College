@@ -4,8 +4,9 @@ Usage:
     python seed.py            # create tables and add anything missing (safe to re-run)
     python seed.py --reset    # DROP every table first, then seed from scratch
 
-The admin account is taken from ADMIN_USERNAME / ADMIN_PASSWORD in backend/.env.
-Re-running the script updates that admin's password to the current value.
+The admin account is taken from ADMIN_USERNAME / ADMIN_PASSWORD / ADMIN_EMAIL in
+backend/.env. Re-running the script updates that admin's password (and email, when
+set) to the current values. Password reset links are sent to ADMIN_EMAIL.
 """
 import argparse
 import os
@@ -13,6 +14,7 @@ import sys
 
 from app import create_app
 from models import AdminUser, Announcement, Elective, Level, Module, Programme, Unit, db, to_roman
+from utils import is_valid_email
 
 # ---------------------------------------------------------------------------
 # Level progression (same for all programmes; editable later in the admin)
@@ -296,6 +298,15 @@ def seed_admin():
     else:
         print(f"  Admin user '{username}' exists; password updated from .env")
     admin.set_password(password)
+
+    email = (os.environ.get("ADMIN_EMAIL") or "").strip()
+    if email and is_valid_email(email):
+        admin.email = email.lower()
+        print(f"  Admin email set to {admin.email} (password reset links go here)")
+    elif email:
+        print(f"  ! ADMIN_EMAIL '{email}' is not a valid email address, so it was not saved.")
+    elif not admin.email:
+        print("  ! ADMIN_EMAIL is not set, so 'Forgot password' emails cannot be delivered.")
 
 
 def main():

@@ -1,10 +1,9 @@
 import { useState } from 'react';
-import { Navigate, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, Navigate, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { getErrorMessage, getToken, setToken } from '../../api/client';
 import { login } from '../../api/admin';
-import BrandNames from '../../components/BrandNames';
-import Logo from '../../components/Logo';
-import Seo from '../../components/Seo';
+import PasswordField from '../../components/PasswordField';
+import AdminAuthCard from './AdminAuthCard';
 
 export default function AdminLogin() {
   const navigate = useNavigate();
@@ -45,62 +44,48 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="admin-login">
-      <Seo title="Admin login" noIndex />
-      <main className="admin-login-card">
-        <div className="admin-login-brand">
-          <Logo size={88} decorative />
-          <BrandNames className="brand-names-stacked" />
+    <AdminAuthCard title="Admin sign in">
+      {searchParams.get('reset') ? (
+        <div className="alert alert-success" role="status">
+          Your password has been changed. Sign in with your new password.
         </div>
-        <h1>Admin sign in</h1>
-        {searchParams.get('expired') ? (
-          <div className="alert alert-info" role="status">
-            Your session has ended. Please sign in again.
+      ) : null}
+      {searchParams.get('expired') ? (
+        <div className="alert alert-info" role="status">
+          Your session has ended. Please sign in again.
+        </div>
+      ) : null}
+      <form onSubmit={handleSubmit} noValidate>
+        <div className="form-field">
+          <label htmlFor="username" className="form-label">
+            Username
+          </label>
+          <input
+            id="username"
+            name="username"
+            className="form-control"
+            autoComplete="username"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
+            value={form.username}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <PasswordField id="password" label="Password" value={form.password} onChange={handleChange} />
+        <p className="admin-login-forgot">
+          <Link to="/admin/forgot-password">Forgot password?</Link>
+        </p>
+        {error ? (
+          <div className="alert alert-error" role="alert">
+            {error}
           </div>
         ) : null}
-        <form onSubmit={handleSubmit} noValidate>
-          <div className="form-field">
-            <label htmlFor="username" className="form-label">
-              Username
-            </label>
-            <input
-              id="username"
-              name="username"
-              className="form-control"
-              autoComplete="username"
-              value={form.username}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="form-field">
-            <label htmlFor="password" className="form-label">
-              Password
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              className="form-control"
-              autoComplete="current-password"
-              value={form.password}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          {error ? (
-            <div className="alert alert-error" role="alert">
-              {error}
-            </div>
-          ) : null}
-          <button type="submit" className="btn btn-gold btn-block" disabled={submitting}>
-            {submitting ? 'Signing in…' : 'Sign in'}
-          </button>
-        </form>
-        <a href="/" className="admin-login-back">
-          ← Back to website
-        </a>
-      </main>
-    </div>
+        <button type="submit" className="btn btn-gold btn-block" disabled={submitting}>
+          {submitting ? 'Signing in…' : 'Sign in'}
+        </button>
+      </form>
+    </AdminAuthCard>
   );
 }

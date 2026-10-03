@@ -1,10 +1,14 @@
 """Admin API endpoints. Everything except /login requires a valid JWT."""
 import csv
+import hashlib
+import hmac
 import io
+import re
 from datetime import datetime
 
-from flask import Blueprint, Response, jsonify, request
-from flask_jwt_extended import create_access_token, get_jwt_identity, verify_jwt_in_request
+from flask import Blueprint, Response, current_app, jsonify, request
+from flask_jwt_extended import create_access_token, get_jwt, get_jwt_identity, verify_jwt_in_request
+from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
 from sqlalchemy import func, or_
 from sqlalchemy.orm import selectinload
 
@@ -23,6 +27,7 @@ from models import (
     db,
     to_roman,
 )
+from mailer import mail_configured, send_email
 from utils import (
     SLUG_RE,
     clean_text,
@@ -39,15 +44,37 @@ from utils import (
 bp = Blueprint("admin", __name__)
 
 
+# Endpoints reachable without a token (signing in and recovering a password).
+PUBLIC_ENDPOINTS = {
+    "admin.login",
+    "admin.forgot_password",
+    "admin.check_reset_token",
+    "admin.reset_password",
+}
+
+
+def password_fingerprint(admin):
+    """Short value that changes whenever the admin's password changes.
+
+    Stored in login tokens and reset links so both stop working after a password
+    change. It is an HMAC, so it reveals nothing about the password hash.
+    """
+    key = current_app.config["SECRET_KEY"].encode()
+    return hmac.new(key, admin.password_hash.encode(), hashlib.sha256).hexdigest()[:16]
+
+
 @bp.before_request
 def require_admin():
-    """Protect every admin endpoint except the login route."""
-    if request.method == "OPTIONS" or request.endpoint == "admin.login":
+    """Protect every admin endpoint except signing in and password recovery."""
+    if request.method == "OPTIONS" or request.endpoint in PUBLIC_ENDPOINTS:
         return None
     verify_jwt_in_request()
     admin_id = parse_int(get_jwt_identity())
-    if admin_id is None or db.session.get(AdminUser, admin_id) is None:
+    admin = db.session.get(AdminUser, admin_id) if admin_id is not None else None
+    if admin is None:
         return json_error("Your session is no longer valid. Please log in again.", 401)
+    if get_jwt().get("pwv") != password_fingerprint(admin):
+        return json_error("Your password was changed. Please log in again.", 401)
     return None
 
 
@@ -80,8 +107,142 @@ def login():
     if admin is None or not admin.check_password(password):
         return json_error("Invalid username or password.", 401)
 
-    token = create_access_token(identity=str(admin.id), additional_claims={"username": admin.username})
+    token = create_access_token(
+        identity=str(admin.id),
+        additional_claims={"username": admin.username, "pwv": password_fingerprint(admin)},
+    )
     return jsonify({"access_token": token, "admin": admin.to_dict()})
+
+
+# ---------------------------------------------------------------------------
+# Forgot / reset password
+# ---------------------------------------------------------------------------
+def _reset_serializer():
+    return URLSafeTimedSerializer(current_app.config["SECRET_KEY"], salt="admin-password-reset")
+
+
+def make_reset_token(admin):
+    return _reset_serializer().dumps({"uid": admin.id, "pwv": password_fingerprint(admin)})
+
+
+def _admin_from_reset_token(token):
+    """Return (admin, None) for a valid reset token, or (None, error_response)."""
+    try:
+        data = _reset_serializer().loads(token, max_age=current_app.config["PASSWORD_RESET_MAX_AGE"])
+    except SignatureExpired:
+        return None, json_error("This reset link has expired. Please request a new one.", 400)
+    except BadSignature:
+        return None, json_error("This reset link is not valid. Please request a new one.", 400)
+    admin = db.session.get(AdminUser, parse_int(data.get("uid")) or 0) if isinstance(data, dict) else None
+    if admin is None or data.get("pwv") != password_fingerprint(admin):
+        # The password has changed since the link was issued, so the link was already used.
+        return None, json_error("This reset link has already been used. Please request a new one.", 400)
+    return admin, None
+
+
+def password_problem(password, username):
+    """Explain why a new password is too weak, or return None if it is acceptable."""
+    if len(password) < 8:
+        return "Use at least 8 characters."
+    if len(password) > 128:
+        return "Use 128 characters or fewer."
+    if not re.search(r"[A-Za-z]", password) or not re.search(r"\d", password):
+        return "Use a mix of letters and numbers."
+    if password.lower() == username.lower():
+        return "Your password cannot be the same as your username."
+    return None
+
+
+def _send_reset_link(admin):
+    minutes = current_app.config["PASSWORD_RESET_MAX_AGE"] // 60
+    link = f"{current_app.config['FRONTEND_URL']}/admin/reset-password?token={make_reset_token(admin)}"
+    if not mail_configured():
+        current_app.logger.warning(
+            "Email is not configured. Password reset link for admin '%s' (valid %s minutes): %s",
+            admin.username, minutes, link,
+        )
+        return
+    if not admin.email:
+        current_app.logger.warning(
+            "Password reset requested for admin '%s', but the account has no email address. "
+            "Set ADMIN_EMAIL in backend/.env and run seed.py.", admin.username,
+        )
+        return
+    send_email(
+        admin.email,
+        "Reset your Manna College admin password",
+        f"Hello {admin.username},\n\n"
+        "We received a request to reset the password for your Manna College & Manna Bible "
+        "Institute admin account.\n\n"
+        f"Choose a new password here (this link expires in {minutes} minutes and works once):\n"
+        f"{link}\n\n"
+        "If you did not ask for this, you can ignore this email. Your password will not change.\n",
+    )
+
+
+@bp.post("/forgot-password")
+@rate_limit(limit=5, window=900, scope="admin-forgot-password")
+def forgot_password():
+    """Email a reset link. Always answers the same way so it never reveals which accounts exist."""
+    data, error = get_json_body()
+    if error:
+        return error
+    identifier = str(data.get("identifier") or "").strip()
+    if not identifier:
+        return validation_error({"identifier": "Enter your username or email address."})
+
+    admin = AdminUser.query.filter(
+        or_(
+            func.lower(AdminUser.username) == identifier.lower(),
+            func.lower(AdminUser.email) == identifier.lower(),
+        )
+    ).first()
+    if admin is not None:
+        _send_reset_link(admin)
+
+    minutes = current_app.config["PASSWORD_RESET_MAX_AGE"] // 60
+    payload = {
+        "message": "If that account exists, we have sent a password reset link to its email address. "
+        f"The link expires in {minutes} minutes."
+    }
+    if current_app.debug and not mail_configured():
+        payload["dev_note"] = (
+            "Email is not set up on this server yet, so the reset link was printed in the "
+            "backend (Flask) terminal instead."
+        )
+    return jsonify(payload)
+
+
+@bp.post("/reset-password/check")
+@rate_limit(limit=30, window=900, scope="admin-reset-check")
+def check_reset_token():
+    """Let the reset page show "link expired" straight away instead of after typing."""
+    data, error = get_json_body()
+    if error:
+        return error
+    admin, error = _admin_from_reset_token(str(data.get("token") or ""))
+    if error:
+        return error
+    return jsonify({"username": admin.username})
+
+
+@bp.post("/reset-password")
+@rate_limit(limit=10, window=900, scope="admin-reset-password")
+def reset_password():
+    data, error = get_json_body()
+    if error:
+        return error
+    admin, error = _admin_from_reset_token(str(data.get("token") or ""))
+    if error:
+        return error
+    password = str(data.get("password") or "")
+    problem = password_problem(password, admin.username)
+    if problem:
+        return validation_error({"password": problem})
+    admin.set_password(password)  # also invalidates this link and any signed-in sessions
+    db.session.commit()
+    current_app.logger.info("Admin '%s' reset their password.", admin.username)
+    return jsonify({"message": "Your password has been changed. You can now sign in with it."})
 
 
 @bp.get("/me")

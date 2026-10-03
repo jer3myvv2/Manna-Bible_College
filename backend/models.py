@@ -2,7 +2,7 @@
 from datetime import datetime, timezone
 
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import event
+from sqlalchemy import event, inspect, text
 from sqlalchemy.engine import Engine
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -306,6 +306,7 @@ class AdminUser(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(120))  # where password reset links are sent
     password_hash = db.Column(db.String(255), nullable=False)
 
     def set_password(self, password):
@@ -315,4 +316,25 @@ class AdminUser(db.Model):
         return check_password_hash(self.password_hash, password)
 
     def to_dict(self):
-        return {"id": self.id, "username": self.username}
+        return {"id": self.id, "username": self.username, "email": self.email}
+
+
+def upgrade_schema():
+    """Add columns introduced after the first release to an existing database.
+
+    db.create_all() only creates missing tables, so new columns on existing
+    tables are added here (there is no migration tool in this project).
+    """
+    added_columns = {
+        "admin_users": {"email": "VARCHAR(120)"},
+    }
+    inspector = inspect(db.engine)
+    tables = set(inspector.get_table_names())
+    with db.engine.begin() as connection:
+        for table, columns in added_columns.items():
+            if table not in tables:
+                continue
+            existing = {column["name"] for column in inspector.get_columns(table)}
+            for name, sql_type in columns.items():
+                if name not in existing:
+                    connection.execute(text(f"ALTER TABLE {table} ADD COLUMN {name} {sql_type}"))

@@ -66,6 +66,8 @@ const client = axios.create({
 });
 
 const isAdminUrl = (url = '') => url.startsWith('/admin');
+const PUBLIC_ADMIN_URLS = ['/admin/login', '/admin/forgot-password', '/admin/reset-password'];
+const isPublicAdminUrl = (url = '') => PUBLIC_ADMIN_URLS.some((path) => url.startsWith(path));
 let redirectingToLogin = false; // several requests can fail at once; redirect only once
 
 // Attach the admin token to admin requests only.
@@ -82,7 +84,7 @@ client.interceptors.response.use(
   (response) => response,
   (error) => {
     const url = error.config?.url || '';
-    if (error.response?.status === 401 && isAdminUrl(url) && !url.startsWith('/admin/login')) {
+    if (error.response?.status === 401 && isAdminUrl(url) && !isPublicAdminUrl(url)) {
       clearToken();
       if (!redirectingToLogin && !window.location.pathname.startsWith('/admin/login')) {
         redirectingToLogin = true;

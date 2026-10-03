@@ -201,6 +201,75 @@ class ApiTestCase(unittest.TestCase):
         res = self.client.patch(f"/api/admin/messages/{messages[0]['id']}", json={"is_read": True}, headers=headers)
         self.assertTrue(res.get_json()["is_read"])
 
+    # Forgot / reset password ------------------------------------------------
+    def _reset_token(self):
+        from routes.admin import make_reset_token
+
+        with self.app.test_request_context():
+            return make_reset_token(AdminUser.query.filter_by(username="admin").first())
+
+    def test_forgot_password_does_not_reveal_accounts(self):
+        known = self.client.post("/api/admin/forgot-password", json={"identifier": "admin"})
+        unknown = self.client.post("/api/admin/forgot-password", json={"identifier": "nobody"})
+        self.assertEqual(known.status_code, 200)
+        self.assertEqual(known.get_json()["message"], unknown.get_json()["message"])
+        empty = self.client.post("/api/admin/forgot-password", json={"identifier": ""})
+        self.assertEqual(empty.status_code, 400)
+
+    def test_forgot_password_emails_link(self):
+        import routes.admin
+
+        sent = []
+        self.app.config.update(MAIL_SERVER="smtp.example.com")
+        with self.app.app_context():
+            AdminUser.query.filter_by(username="admin").first().email = "admin@example.com"
+            db.session.commit()
+        original = routes.admin.send_email
+        routes.admin.send_email = lambda to, subject, body: sent.append((to, subject, body)) or True
+        try:
+            res = self.client.post("/api/admin/forgot-password", json={"identifier": "ADMIN@example.com"})
+        finally:
+            routes.admin.send_email = original
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(len(sent), 1)
+        to, _subject, body = sent[0]
+        self.assertEqual(to, "admin@example.com")
+        self.assertIn("http://localhost:5173/admin/reset-password?token=", body)
+        token = body.split("token=")[1].split()[0]
+        self.assertEqual(self.client.post("/api/admin/reset-password/check", json={"token": token}).status_code, 200)
+
+    def test_reset_password_flow(self):
+        headers = self.login()
+        token = self._reset_token()
+        check = self.client.post("/api/admin/reset-password/check", json={"token": token})
+        self.assertEqual(check.get_json(), {"username": "admin"})
+        weak = self.client.post("/api/admin/reset-password", json={"token": token, "password": "short"})
+        self.assertEqual(weak.status_code, 400)
+        self.assertIn("password", weak.get_json()["fields"])
+        letters_only = self.client.post("/api/admin/reset-password", json={"token": token, "password": "onlyletters"})
+        self.assertEqual(letters_only.status_code, 400)
+        ok = self.client.post("/api/admin/reset-password", json={"token": token, "password": "NewPassw0rd"})
+        self.assertEqual(ok.status_code, 200, ok.get_json())
+        # Old session is signed out, old password fails, new password works
+        self.assertEqual(self.client.get("/api/admin/stats", headers=headers).status_code, 401)
+        old = self.client.post("/api/admin/login", json={"username": "admin", "password": "secret-password"})
+        self.assertEqual(old.status_code, 401)
+        new = self.client.post("/api/admin/login", json={"username": "admin", "password": "NewPassw0rd"})
+        self.assertEqual(new.status_code, 200)
+        # The link only works once
+        again = self.client.post("/api/admin/reset-password", json={"token": token, "password": "Another1pass"})
+        self.assertEqual(again.status_code, 400)
+        self.assertIn("already been used", again.get_json()["error"])
+
+    def test_reset_token_invalid_or_expired(self):
+        bad = self.client.post("/api/admin/reset-password", json={"token": "nonsense", "password": "NewPassw0rd"})
+        self.assertEqual(bad.status_code, 400)
+        token = self._reset_token()
+        self.app.config["PASSWORD_RESET_MAX_AGE"] = -1
+        expired = self.client.post("/api/admin/reset-password/check", json={"token": token})
+        self.assertEqual(expired.status_code, 400)
+        self.assertIn("expired", expired.get_json()["error"])
+
     def test_unknown_api_route_is_json(self):
         res = self.client.get("/api/nope")
         self.assertEqual(res.status_code, 404)

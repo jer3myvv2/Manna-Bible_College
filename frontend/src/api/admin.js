@@ -4,6 +4,11 @@ import client from './client';
 const data = (request) => request.then((response) => response.data);
 
 export const login = (username, password) => data(client.post('/admin/login', { username, password }));
+
+// Password recovery (no token needed)
+export const forgotPassword = (identifier) => data(client.post('/admin/forgot-password', { identifier }));
+export const checkResetToken = (token) => data(client.post('/admin/reset-password/check', { token }));
+export const resetPassword = (token, password) => data(client.post('/admin/reset-password', { token, password }));
 export const getStats = () => data(client.get('/admin/stats'));
 
 // Applications

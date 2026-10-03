@@ -667,8 +667,102 @@
 
 .admin-login-back {
   display: inline-block;
-  margin-top: 16px;
   font-weight: 600;
+}
+
+.admin-login-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin-top: 20px;
+}
+
+.admin-login-forgot {
+  margin: -6px 0 16px;
+  text-align: right;
+}
+
+.admin-login-forgot a {
+  display: inline-block;
+  padding: 4px 0;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+/* Password field with show/hide button */
+.password-input {
+  position: relative;
+}
+
+.password-input .form-control {
+  padding-right: 52px;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 40px;
+  transform: translateY(-50%);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.password-toggle:hover,
+.password-toggle[aria-pressed='true'] {
+  color: var(--maroon);
+}
+
+.password-toggle:focus-visible {
+  outline: 3px solid var(--maroon);
+  outline-offset: 0;
+}
+
+.link-button {
+  display: inline;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--maroon);
+  font: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.caps-warning {
+  color: var(--gold-text);
+  font-weight: 700;
+}
+
+.auth-success {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 16px;
+  padding: 16px;
+  border-radius: var(--radius-sm);
+  background: var(--success-bg);
+  color: #134d31;
+}
+
+.auth-success p {
+  margin: 0;
+}
+
+.auth-success-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  color: var(--success);
 }
 
 /* ------------------------------------------------------------------ phones */
